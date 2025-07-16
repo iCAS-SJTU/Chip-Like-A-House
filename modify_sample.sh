@@ -2,7 +2,7 @@
 
 # --- Configuration Parameters ---
 # Your Python script name
-PYTHON_SCRIPT="modify_final.py" 
+PYTHON_SCRIPT="modify_def.py" 
 
 # Initial DIEAREA dimensions (DBU) - these values are used to calculate cutout and complex shape coordinates
 BASE_WIDTH=2200000
@@ -10,7 +10,7 @@ BASE_HEIGHT=3000000
 
 # Input DEF file name (all operations will be based on this file)
 # Please ensure this file exists in the same directory as the Bash script and is the correct DEF file you wish to modify.
-INPUT_DEF_BASE="ariana_origin_with_c.def"
+INPUT_DEF_BASE="your_original_def.def"
 
 # Output directory for generated files
 OUTPUT_DIR="generated_rectilinear_defs"
