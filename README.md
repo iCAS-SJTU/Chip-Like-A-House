@@ -17,6 +17,7 @@ This repository contains a set of Python scripts and a sample shell script desig
     * Supports two primary modification modes:
         * **Rectangle-based Cutouts (`--rectangles` and `--coordinates`)**: Allows you to define rectangular areas (e.g., L-shaped corners, U-shaped notches) to be "cut out" from the original rectangular `DIEAREA`, resulting in a rectilinear shape.
         * **Direct DIEAREA Line Specification (`--diearea-line`)**: Enables you to directly input a complete rectilinear `DIEAREA` line, providing full control over complex chip boundary definitions.
+        * **Image-based Contour Recognition (`--generate-from-image`)**: Enables you to directly input an image with desired rectilinear shape, and the required width and height. After recognizing the contour with OpenCV and rearranging the coordinates, the `DIEAREA` line will be automatically replaced by the rectilinear one.
     * Identifies edge and internal points to correctly form the new rectilinear boundary.
 
 * **`modify_sample.sh`**:
@@ -73,6 +74,12 @@ As described in the Features section, `modify_def.py` allows you to alter the `D
 
     ```bash
     python modify_def.py -i <input_def_file> -o <output_def_file> --rectangles <num_rects> --coordinates <x1 y1 x2 y2 ...> [--verbose]
+    ```
+
+* Apply OpenCV to Transform Contour from an Image
+
+    ```bash
+    python modify_def.py -i <input_def_file> -o <output_def_file> --generate-from-image --width <desired_width> --height <desired_height> [--origin-at-zero] [--verbose]
     ```
 
 * Batch production using `modify_sample.sh`
