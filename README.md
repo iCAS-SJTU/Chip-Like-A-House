@@ -8,8 +8,12 @@ This repository contains a set of Python scripts and a sample shell script desig
 
 * **`generate_def.py`**:
     * Generates a `.def` file based on a specified `DIEAREA` (width and height in Database Units - DBU).
-    * Automatically calculates and includes `ROW` sections with alternating orientations.
-    * Generates `TRACKS` sections for various metal layers (by default, metal1 to metal10) with configurable start points and steps.
+    * **Configurable Parameters**: Supports JSON configuration files for customizing design parameters, cell libraries, margins, and track specifications.
+    * **Adaptive Margin Calculation**: Automatically calculates I/O margins based on percentage of die size with engineering minimums, accounting for I/O pads, seal rings, power rings, and routing margins.
+    * **Intelligent ROW Generation**: Automatically calculates and includes `ROW` sections with alternating orientations (N/FS), optimized for the available die area after margin calculation.
+    * **Multi-layer TRACKS Support**: Generates `TRACKS` sections for various metal layers (metal1 to metal10 by default) with configurable start points, steps, and layer-specific adjustments.
+    * **Die Size Validation**: Validates that the specified die size is sufficient to accommodate at least one standard cell and one row.
+    * **Template Generation**: Can save current configuration as a JSON template for reuse and customization.
     * Outputs a complete, basic `.def` file structure (with `COMPONENTS` and `NETS` empty).
 
 * **`modify_def.py`**:
@@ -34,8 +38,9 @@ This repository contains a set of Python scripts and a sample shell script desig
 ### Prerequisites
 
 * Python 3.x
-* Git (for version control and cloning this repository)
+* Git (for version control and cloning this repository)  
 * A Unix-like environment (for running `modify_sample.sh`, e.g., Linux, macOS, WSL on Windows)
+* **Optional**: JSON configuration files for advanced `generate_def.py` usage
 
 ### Installation
 
@@ -50,10 +55,56 @@ cd Chip-Like-A-House
 
 #### 1. Generating a Basic `.def` File (`generate_def.py`)
 
-To generate a new `.def` file:
+To generate a new `.def` file with default parameters:
 
 ```bash
 python generate_def.py -w <width_dbu> -t <height_dbu> -o <output_file_name.def> -d <design_name>
+```
+
+**Advanced Usage with Configuration:**
+
+* Save current configuration as a template:
+```bash
+python generate_def.py --save-config my_template.json
+```
+
+* Generate with custom JSON configuration:
+```bash
+python generate_def.py -w <width_dbu> -t <height_dbu> -o <output_file.def> -c <config.json>
+```
+
+**Configuration File Format:**
+The configuration file is a JSON file that allows you to customize:
+- Design parameters (name, version, database units)
+- Cell library specifications (standard cell dimensions)
+- Margin calculations (percentages and minimum values)
+- Track specifications for all metal layers
+- Layer-specific adjustments
+
+Example configuration structure: (following are the default configuration data)
+```json
+{
+  "design": {
+    "name": "my_design",
+    "version": "5.8",
+    "dbu_per_micron": 2000
+  },
+  "cell_library": {
+    "name": "my_cell_site",
+    "width": 380,
+    "height": 2800
+  },
+  "margins": {
+    "left_percent": 0.005,
+    "right_percent": 0.005,
+    "bottom_percent": 0.005,
+    "top_percent": 0.005,
+    "min_left": 40280,
+    "min_right": 40200,
+    "min_bottom": 42000,
+    "min_top": 48000
+  }
+}
 ```
 
 #### 2. Add `COMPONENTS` and `NETS` to the Basic `.def` File (manually)
