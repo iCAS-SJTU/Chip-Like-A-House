@@ -1,0 +1,156 @@
+{
+  "design": {
+    "name": "bp_be",
+    "version": "5.8",
+    "dbu_per_micron": 2000
+  },
+  "cell_library": {
+    "name": "FreePDK45_38x28_10R_NP_162NW_34O",
+    "width": 380,
+    "height": 2800
+  },
+  "margins": {
+    "left_percent": 0.005,
+    "right_percent": 0.005,
+    "bottom_percent": 0.005,
+    "top_percent": 0.005,
+    "min_left": 40280,
+    "min_right": 40200,
+    "min_bottom": 42000,
+    "min_top": 48000
+  },
+  "tracks": [
+    {
+      "layer": "metal1",
+      "direction": "X",
+      "start": 190,
+      "step": 280
+    },
+    {
+      "layer": "metal1",
+      "direction": "Y",
+      "start": 140,
+      "step": 280
+    },
+    {
+      "layer": "metal2",
+      "direction": "X",
+      "start": 190,
+      "step": 380
+    },
+    {
+      "layer": "metal2",
+      "direction": "Y",
+      "start": 140,
+      "step": 380
+    },
+    {
+      "layer": "metal3",
+      "direction": "X",
+      "start": 190,
+      "step": 280
+    },
+    {
+      "layer": "metal3",
+      "direction": "Y",
+      "start": 140,
+      "step": 280
+    },
+    {
+      "layer": "metal4",
+      "direction": "X",
+      "start": 190,
+      "step": 560
+    },
+    {
+      "layer": "metal4",
+      "direction": "Y",
+      "start": 140,
+      "step": 560
+    },
+    {
+      "layer": "metal5",
+      "direction": "X",
+      "start": 190,
+      "step": 560
+    },
+    {
+      "layer": "metal5",
+      "direction": "Y",
+      "start": 140,
+      "step": 560
+    },
+    {
+      "layer": "metal6",
+      "direction": "X",
+      "start": 190,
+      "step": 560
+    },
+    {
+      "layer": "metal6",
+      "direction": "Y",
+      "start": 140,
+      "step": 560
+    },
+    {
+      "layer": "metal7",
+      "direction": "X",
+      "start": 1790,
+      "step": 1600
+    },
+    {
+      "layer": "metal7",
+      "direction": "Y",
+      "start": 1740,
+      "step": 1600
+    },
+    {
+      "layer": "metal8",
+      "direction": "X",
+      "start": 1790,
+      "step": 1600
+    },
+    {
+      "layer": "metal8",
+      "direction": "Y",
+      "start": 1740,
+      "step": 1600
+    },
+    {
+      "layer": "metal9",
+      "direction": "X",
+      "start": 3390,
+      "step": 3200
+    },
+    {
+      "layer": "metal9",
+      "direction": "Y",
+      "start": 3340,
+      "step": 3200
+    },
+    {
+      "layer": "metal10",
+      "direction": "X",
+      "start": 3390,
+      "step": 3200
+    },
+    {
+      "layer": "metal10",
+      "direction": "Y",
+      "start": 3340,
+      "step": 3200
+    }
+  ],
+  "track_adjustments": {
+    "add_one_layers": [
+      "metal2",
+      "metal4",
+      "metal5",
+      "metal6",
+      "metal7",
+      "metal8",
+      "metal9",
+      "metal10"
+    ]
+  }
+}
