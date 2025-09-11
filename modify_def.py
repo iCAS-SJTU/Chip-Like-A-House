@@ -1,175 +1,6 @@
 import argparse
 import re
 import sys
-import cv2
-import numpy as np
-
-# --- OpenCV-based Image Processing Functions ---
-
-def merge_close_coords(coords, tolerance):
-    """
-    Merges close coordinate values into a single average value.
-    """
-    if not coords:
-        return []
-        
-    coords.sort()
-    
-    merged_coords = []
-    current_group = [coords[0]]
-    
-    for i in range(1, len(coords)):
-        if coords[i] - current_group[-1] < tolerance:
-            current_group.append(coords[i])
-        else:
-            merged_coords.append(int(round(np.mean(current_group))))
-            current_group = [coords[i]]
-            
-    merged_coords.append(int(round(np.mean(current_group))))
-    return merged_coords
-
-def simplify_polygon(points):
-    """
-    Removes redundant collinear points to simplify a polygon.
-    """
-    if len(points) < 3:
-        return points
-    
-    simplified_points = []
-    for i in range(len(points)):
-        p_prev = points[(i - 1 + len(points)) % len(points)]
-        p_curr = points[i]
-        p_next = points[(i + 1) % len(points)]
-        
-        # Use cross-product to check for collinearity
-        vec1_x, vec1_y = p_curr[0] - p_prev[0], p_curr[1] - p_prev[1]
-        vec2_x, vec2_y = p_next[0] - p_curr[0], p_next[1] - p_curr[1]
-        
-        cross_product = vec1_x * vec2_y - vec1_y * vec2_x
-        
-        # If the cross-product is very close to 0, the three points are collinear.
-        # Tolerance can be adjusted as needed.
-        if abs(cross_product) > 1:
-            simplified_points.append(p_curr)
-            
-    return simplified_points
-
-def generate_diearea_from_image(image_path, target_width, target_height, origin_at_zero=False):
-    """
-    Processes an image to generate a DIEAREA line based on its non-red outline.
-    """
-    img = cv2.imread(image_path, cv2.IMREAD_COLOR)
-    if img is None:
-        print(f"Error: Could not read image file {image_path}")
-        return None
-    
-    img_height_px, img_width_px = img.shape[:2]
-    
-    # Pre-processing to find the non-red area
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    lower_red1 = np.array([0, 100, 100])
-    upper_red1 = np.array([10, 255, 255])
-    lower_red2 = np.array([160, 100, 100])
-    upper_red2 = np.array([180, 255, 255])
-    mask1 = cv2.inRange(hsv, lower_red1, upper_red1)
-    mask2 = cv2.inRange(hsv, lower_red2, upper_red2)
-    mask = cv2.bitwise_or(mask1, mask2)
-    die_area_mask = cv2.bitwise_not(mask)
-    
-    # Morphological operations to clean up the mask
-    kernel = np.ones((5, 5), np.uint8)
-    die_area_mask = cv2.erode(die_area_mask, kernel, iterations=1)
-    die_area_mask = cv2.dilate(die_area_mask, kernel, iterations=1)
-    
-    # Find contours
-    contours, _ = cv2.findContours(die_area_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    if not contours:
-        print("Error: No contours found in the image.")
-        return None
-    
-    main_contour = max(contours, key=cv2.contourArea)
-    
-    # Scale physical coordinates
-    scale_x = target_width / img_width_px
-    scale_y = target_height / img_height_px
-    
-    physical_points_list = []
-    if len(main_contour) > 0:
-        p_prev = main_contour[-1][0]
-    for i in range(len(main_contour)):
-        p_curr = main_contour[i][0]
-        p_next = main_contour[(i + 1) % len(main_contour)][0]
-        
-        # Filter for corner points using cross-product
-        vec1_x, vec1_y = p_curr[0] - p_prev[0], p_curr[1] - p_prev[1]
-        vec2_x, vec2_y = p_next[0] - p_curr[0], p_next[1] - p_curr[1]
-        
-        if abs(vec1_x * vec2_y - vec1_y * vec2_x) > 0.001:
-            x_phy = p_curr[0] * scale_x
-            y_phy = (img_height_px - p_curr[1]) * scale_y
-            
-            # Avoid adding duplicate points
-            if not physical_points_list or (x_phy, y_phy) != physical_points_list[-1]:
-                 physical_points_list.append((x_phy, y_phy))
-        p_prev = p_curr
-
-    # Snap points to a grid
-    if not physical_points_list:
-        print("Error: No corner points found.")
-        return None
-        
-    x_coords = [p[0] for p in physical_points_list]
-    y_coords = [p[1] for p in physical_points_list]
-    
-    # Tolerance based on physical scale (e.g., 5 pixels)
-    tolerance_x = scale_x * 5
-    tolerance_y = scale_y * 5
-    
-    snap_x = merge_close_coords(x_coords, tolerance_x)
-    snap_y = merge_close_coords(y_coords, tolerance_y)
-    
-    final_points_list = []
-    for x_raw, y_raw in physical_points_list:
-        closest_x = min(snap_x, key=lambda val: abs(val - x_raw))
-        closest_y = min(snap_y, key=lambda val: abs(val - y_raw))
-        final_points_list.append((closest_x, closest_y))
-    
-    # Remove duplicate points while preserving order
-    seen_points = set()
-    unique_points = []
-    for p in final_points_list:
-        if p not in seen_points:
-            unique_points.append(p)
-            seen_points.add(p)
-    final_points_list = unique_points
-
-    # Simplify the polygon by removing collinear points
-    final_points_list = simplify_polygon(final_points_list)
-
-    # Shift origin to (0,0) if requested
-    if origin_at_zero:
-        min_x = min(p[0] for p in final_points_list)
-        min_y = min(p[1] for p in final_points_list)
-        final_points_list = [(p[0] - min_x, p[1] - min_y) for p in final_points_list]
-
-    # Ensure contour is clockwise
-    area_sum = 0.0
-    for i in range(len(final_points_list)):
-        p1 = final_points_list[i]
-        p2 = final_points_list[(i + 1) % len(final_points_list)]
-        area_sum += (p1[0] * p2[1] - p2[0] * p1[1])
-        
-    if area_sum > 0:
-        final_points_list.reverse()
-        
-    # Format the final DIEAREA string
-    die_area_str = "DIEAREA "
-    for p in final_points_list:
-        die_area_str += f"( {p[0]} {p[1]} ) "
-    
-    return die_area_str.strip() + ";"
-
-# --- DEF File Processing Functions ---
 
 def validate_rectangles(value):
     """Validate that the number of rectangles is >= 1"""
@@ -199,7 +30,7 @@ def parse_arguments():
         help='Output .def file path'
     )
 
-    # Create a mutually exclusive group for different modification modes
+    # Create a mutually exclusive group for rectangle-based input and direct DIEAREA line input
     group = parser.add_mutually_exclusive_group(required=True)
     
     group.add_argument(
@@ -214,35 +45,11 @@ def parse_arguments():
         help='Directly specify the new DIEAREA line (e.g., "DIEAREA ( 0 0 ) ( 1000 1000 ) ;")'
     )
     
-    group.add_argument(
-        '-g', '--generate-from-image',
-        type=str,
-        help='Path to the image file to generate the DIEAREA from'
-    )
-    
     parser.add_argument(
         '-c', '--coordinates',
         type=int,
         nargs='+',
         help='Coordinate pairs in the format x1 y1 x2 y2 ... (4 numbers per pair, number of pairs must match rectangles)'
-    )
-    
-    parser.add_argument(
-        '--width',
-        type=int,
-        help='Physical width of the image in micrometers (required with --generate-from-image)'
-    )
-    
-    parser.add_argument(
-        '--height',
-        type=int,
-        help='Physical height of the image in micrometers (required with --generate-from-image)'
-    )
-
-    parser.add_argument(
-        '--origin-at-zero',
-        action='store_true',
-        help='Shift the generated DIEAREA coordinates so the minimum x and y values are 0 (use with --generate-from-image)'
     )
     
     parser.add_argument(
@@ -257,13 +64,6 @@ def parse_arguments():
     if args.rectangles is not None and args.coordinates is None:
         parser.error("--coordinates is required when --rectangles is specified")
     
-    # Validate image-based arguments
-    if args.generate_from_image:
-        if args.width is None or args.height is None:
-            parser.error("--width and --height are required when using --generate-from-image")
-        if args.coordinates or args.rectangles:
-            parser.error("--coordinates and --rectangles cannot be used with --generate-from-image")
-
     # Validate that coordinates are not provided if diearea-line is specified
     if args.diearea_line is not None and args.coordinates is not None:
         parser.error("--coordinates cannot be used with --diearea-line")
@@ -282,12 +82,29 @@ def read_def_file(input_file):
 def parse_diearea(line):
     """Parse coordinates from the DIEAREA line"""
     matches = re.findall(r'\(\s*(\d+)\s+(\d+)\s*\)', line)
-    return [(int(x), int(y)) for x, y in matches]
+    if len(matches) < 2:
+        raise ValueError("DIEAREA line must contain at least 2 coordinate pairs")
+
 
 def identify_edge_and_internal(original_corners, point1, point2):
     """Determine which point is on the edge (including corners) and which is internal"""
-    x0, y0 = original_corners[0]
-    w, h = original_corners[1]
+    if len(original_corners) < 2:
+        raise ValueError("Original corners must contain at least 2 points")
+    
+    x0, y0 = original_corners[0]  # Usually (0, 0)
+    w, h = original_corners[1]    # Width and height of the rectangle
+    
+    # Validate input points
+    if point1 == point2:
+        raise ValueError(f"The two points cannot be the same: {point1}")
+    
+    # Validate coordinate ranges
+    for point in [point1, point2]:
+        x, y = point
+        if x < 0 or y < 0:
+            raise ValueError(f"Coordinates cannot be negative: {point}")
+        if x > w or y > h:
+            raise ValueError(f"Coordinates cannot exceed die area ({w}, {h}): {point}")
 
     # Check if a point is internal
     def is_internal(point):
@@ -298,27 +115,29 @@ def identify_edge_and_internal(original_corners, point1, point2):
     def is_edge(point):
         x, y = point
         return (
-            (x == x0 and 0 <= y <= h) or
-            (x == w and 0 <= y <= h) or
-            (y == y0 and 0 <= x <= w) or
-            (y == h and 0 <= x <= w)
+            (x == x0 and y0 <= y <= h) or  # Left edge (x=0, 0<=y<=h)
+            (x == w and y0 <= y <= h) or   # Right edge (x=w, 0<=y<=h)
+            (y == y0 and x0 <= x <= w) or  # Bottom edge (y=0, 0<=x<=w)
+            (y == h and x0 <= x <= w)      # Top edge (y=h, 0<=x<=w)
         )
 
     if is_internal(point1) and is_edge(point2):
-        return point2, point1
+        return point2, point1  # point2 is edge, point1 is internal
     elif is_internal(point2) and is_edge(point1):
-        return point1, point2
+        return point1, point2  # point1 is edge, point2 is internal
     else:
         raise ValueError("One point must be inside the rectangle and one on the edge")
 
 def generate_new_diearea(original_corners, top_right_pairs, bottom_right_pairs, top_left_pairs, bottom_left_pairs,
                         left_edge_pairs, top_edge_pairs, right_edge_pairs, bottom_edge_pairs):
     """Generate a new DIEAREA line to form a rectilinear shape"""
-    x0, y0 = original_corners[0]
-    w, h = original_corners[1]
+    x0, y0 = original_corners[0]  # Usually (0, 0)
+    w, h = original_corners[1]    # Width and height of the rectangle
 
-    all_points = []
-    
+    # Collect all points
+    all_points = [] 
+
+    # Process corner points
     if len(bottom_left_pairs) == 0:
         all_points.append((x0, y0))
     else:
@@ -387,6 +206,30 @@ def generate_new_diearea(original_corners, top_right_pairs, bottom_right_pairs, 
             else:
                 all_points.extend([(x2, y1), (x2, y2), (x1, y2), (x1, y1)])
 
+    # Clean up duplicate points - loop until no more consecutive duplicates
+    while True:
+        # Step 1: Remove head and tail if they are the same
+        if len(all_points) > 1 and all_points[0] == all_points[-1]:
+            all_points = all_points[1:]
+        
+        # Step 2: Remove consecutive duplicate points
+        cleaned_points = []
+        has_duplicates = False
+        
+        for i in range(len(all_points)):
+            # Add current point if it's not a duplicate of the previous one
+            if i == 0 or all_points[i] != all_points[i-1]:
+                cleaned_points.append(all_points[i])
+            else:
+                has_duplicates = True
+        
+        all_points = cleaned_points
+        
+        # Exit loop if no duplicates were found
+        if not has_duplicates:
+            break
+
+    # Format DIEAREA line
     points_str = ' '.join(f'( {x} {y} )' for x, y in all_points)
     return f"DIEAREA {points_str} ;"
 
@@ -402,8 +245,10 @@ def write_def_file(output_file, lines, new_diearea, diearea_index):
 
 def process_def_file(args):
     """Main logic for processing the .def file"""
+    # Read input file
     lines = read_def_file(args.input)
 
+    # Find DIEAREA line
     diearea_index = -1
     for i, line in enumerate(lines):
         if line.strip().startswith("DIEAREA"):
@@ -414,83 +259,78 @@ def process_def_file(args):
         print("Error: DIEAREA line not found")
         sys.exit(1)
 
-    new_diearea = ""
-
-    # Mode 1: Generate from image
-    if args.generate_from_image:
-        new_diearea = generate_diearea_from_image(
-            args.generate_from_image,
-            args.width,
-            args.height,
-            args.origin_at_zero
-        )
-        if new_diearea is None:
-            sys.exit(1)
-
-    # Mode 2: Direct line replacement
-    elif args.diearea_line:
+    # If diearea-line is provided, use it directly, ensuring no extra spaces before semicolon
+    if args.diearea_line:
         new_diearea = args.diearea_line.rstrip().rstrip(';').strip() + ' ;'
-    
-    # Mode 3: Rectangle subtraction
-    elif args.rectangles:
-        if len(args.coordinates) != args.rectangles * 4:
-            print(f"Error: Coordinate count must be {args.rectangles * 4} (4 coordinates per rectangle)")
-            sys.exit(1)
+        write_def_file(args.output, lines, new_diearea, diearea_index)
+        if args.verbose:
+            print(f"Successfully replaced DIEAREA line in {args.input}, generated new file {args.output}")
+        return
 
-        try:
-            original_corners = parse_diearea(lines[diearea_index])
-        except ValueError:
-            print("Error: Invalid DIEAREA line format")
-            sys.exit(1)
+    # Original rectangle-based processing
+    # Validate coordinate count
+    if len(args.coordinates) != args.rectangles * 4:
+        print(f"Error: Coordinate count must be {args.rectangles * 4} (4 coordinates per rectangle)")
+        sys.exit(1)
 
-        top_right_pairs = []
-        bottom_right_pairs = []
-        top_left_pairs = []
-        bottom_left_pairs = []
-        left_edge_pairs = []
-        top_edge_pairs = []
-        right_edge_pairs = []
-        bottom_edge_pairs = []
-        try:
-            for i in range(0, len(args.coordinates), 4):
-                x1, y1, x2, y2 = args.coordinates[i:i+4]
-                edge_point, internal = identify_edge_and_internal(original_corners, (x1, y1), (x2, y2))
-                x0, y0 = original_corners[0]
-                w, h = original_corners[1]
-                if edge_point == (w, h):
-                    top_right_pairs.append((edge_point, internal))
-                elif edge_point == (w, y0):
-                    bottom_right_pairs.append((edge_point, internal))
-                elif edge_point == (x0, h):
-                    top_left_pairs.append((edge_point, internal))
-                elif edge_point == (x0, y0):
-                    bottom_left_pairs.append((edge_point, internal))
-                elif edge_point[0] == x0 and 0 < edge_point[1] < h:
-                    left_edge_pairs.append((edge_point, internal))
-                elif edge_point[1] == h and 0 < edge_point[0] < w:
-                    top_edge_pairs.append((edge_point, internal))
-                elif edge_point[0] == w and 0 < edge_point[1] < h:
-                    right_edge_pairs.append((edge_point, internal))
-                elif edge_point[1] == y0 and 0 < edge_point[0] < w:
-                    bottom_edge_pairs.append((edge_point, internal))
-        except ValueError as e:
-            print(f"Error: {str(e)}")
-            sys.exit(1)
+    # Parse DIEAREA coordinates
+    try:
+        original_corners = parse_diearea(lines[diearea_index])
+        if len(original_corners) < 2:
+            raise ValueError("DIEAREA must contain at least 2 coordinate pairs")
+    except (ValueError, IndexError) as e:
+        print(f"Error: Invalid DIEAREA line format - {str(e)}")
+        sys.exit(1)
 
-        try:
-            new_diearea = generate_new_diearea(
-                original_corners, top_right_pairs, bottom_right_pairs, top_left_pairs,
-                bottom_left_pairs, left_edge_pairs, top_edge_pairs, right_edge_pairs,
-                bottom_edge_pairs
-            )
-        except ValueError as e:
-            print(f"Error: {str(e)}")
-            sys.exit(1)
+    # Process coordinate pairs into eight lists based on edge/corner
+    top_right_pairs = []
+    bottom_right_pairs = []
+    top_left_pairs = []
+    bottom_left_pairs = []
+    left_edge_pairs = []
+    top_edge_pairs = []
+    right_edge_pairs = []
+    bottom_edge_pairs = []
+    try:
+        for i in range(0, len(args.coordinates), 4):
+            x1, y1, x2, y2 = args.coordinates[i:i+4]
+            edge_point, internal = identify_edge_and_internal(original_corners, (x1, y1), (x2, y2))
+            x0, y0 = original_corners[0]
+            w, h = original_corners[1]
+            if edge_point == (w, h):
+                top_right_pairs.append((edge_point, internal))
+            elif edge_point == (w, y0):
+                bottom_right_pairs.append((edge_point, internal))
+            elif edge_point == (x0, h):
+                top_left_pairs.append((edge_point, internal))
+            elif edge_point == (x0, y0):
+                bottom_left_pairs.append((edge_point, internal))
+            elif edge_point[0] == x0 and 0 < edge_point[1] < h:
+                left_edge_pairs.append((edge_point, internal))
+            elif edge_point[1] == h and 0 < edge_point[0] < w:
+                top_edge_pairs.append((edge_point, internal))
+            elif edge_point[0] == w and 0 < edge_point[1] < h:
+                right_edge_pairs.append((edge_point, internal))
+            elif edge_point[1] == y0 and 0 < edge_point[0] < w:
+                bottom_edge_pairs.append((edge_point, internal))
+    except ValueError as e:
+        print(f"Error: {str(e)}")
+        sys.exit(1)
 
+    # Generate new DIEAREA line
+    try:
+        new_diearea = generate_new_diearea(original_corners, top_right_pairs, bottom_right_pairs, top_left_pairs,
+                                          bottom_left_pairs, left_edge_pairs, top_edge_pairs, right_edge_pairs,
+                                          bottom_edge_pairs)
+    except ValueError as e:
+        print(f"Error: {str(e)}")
+        sys.exit(1)
+
+    # Write output file
     write_def_file(args.output, lines, new_diearea, diearea_index)
     
     if args.verbose:
-        print(f"Successfully processed file {args.input}, generated new file {args.output}")
+        print(f"Successfully processed file {args.input}, generated new file {args.output}, rectangles: {args.rectangles}")
 
 def main():
     """Main function"""
