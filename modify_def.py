@@ -84,6 +84,17 @@ def parse_diearea(line):
     matches = re.findall(r'\(\s*(\d+)\s+(\d+)\s*\)', line)
     if len(matches) < 2:
         raise ValueError("DIEAREA line must contain at least 2 coordinate pairs")
+    
+    coords = [(int(x), int(y)) for x, y in matches]
+    
+    # Validate that we have a valid rectangle (first two points define it)
+    if len(coords) >= 2:
+        x0, y0 = coords[0]
+        x1, y1 = coords[1]
+        if x1 <= x0 or y1 <= y0:
+            raise ValueError(f"Invalid rectangle: second point ({x1}, {y1}) must be greater than first point ({x0}, {y0})")
+    
+    return coords
 
 
 def identify_edge_and_internal(original_corners, point1, point2):

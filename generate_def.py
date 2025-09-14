@@ -18,7 +18,7 @@ class DEFGenerator:
         # Default configuration
         self.config = {
             "design": {
-                "name": "bp_be",
+                "name": "sample_design",
                 "version": "5.8",
                 "dbu_per_micron": 2000
             },
@@ -30,17 +30,19 @@ class DEFGenerator:
             "margins": {
                 # More reasonable percentage-based margins
                 # Based on typical I/O + seal ring + power ring requirements
-                "left_percent": 0.005,      # ~70um for large chips, scales down for small chips
-                "right_percent": 0.005,     # Symmetric left/right
-                "bottom_percent": 0.005,    # Slightly less for bottom (fewer constraints)
-                "top_percent": 0.005,       # More for top (power/clock distribution)
+                "left_percent": 0.005,
+                "right_percent": 0.005,
+                "bottom_percent": 0.005,
+                "top_percent": 0.005,
                 
                 # Engineering minimums based on physical constraints
-                # I/O pads + seal ring + power ring + routing margin
+                # Based on I/O pads + seal ring + power ring + routing margin
                 "min_left": 40280,
                 "min_right": 40200,
                 "min_bottom": 42000,
                 "min_top": 48000
+
+                # The actual margin will be the safest, the maximum of these two constrains.
             },
             "tracks": [
                 {"layer": "metal1", "direction": "X", "start": 190, "step": 280},

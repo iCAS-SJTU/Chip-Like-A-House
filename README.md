@@ -12,7 +12,6 @@ This repository contains a set of Python scripts and a sample shell script desig
     * **Adaptive Margin Calculation**: Automatically calculates I/O margins based on percentage of die size with engineering minimums, accounting for I/O pads, seal rings, power rings, and routing margins.
     * **Intelligent ROW Generation**: Automatically calculates and includes `ROW` sections with alternating orientations (N/FS), optimized for the available die area after margin calculation.
     * **Multi-layer TRACKS Support**: Generates `TRACKS` sections for various metal layers (metal1 to metal10 by default) with configurable start points, steps, and layer-specific adjustments.
-    * **Die Size Validation**: Validates that the specified die size is sufficient to accommodate at least one standard cell and one row.
     * **Template Generation**: Can save current configuration as a JSON template for reuse and customization.
     * Outputs a complete, basic `.def` file structure (with `COMPONENTS` and `NETS` empty).
 
@@ -140,7 +139,8 @@ As described in the Features section, `modify_def.py` allows you to alter the `D
     Before using this bash, make sure you modify the input file:
 
     ```bash
-    INPUT_DEF_BASE="your_original_def.def"
+    INPUT_DEF="input.def"
+    OUT_DIR="out_defs"
     ```
 
     Then execute the script:
