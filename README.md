@@ -1,152 +1,122 @@
-# Chip-Like-A-House: Rectilinear Floorplanning Benchmark with Design Constraints for Large-scale Chips
+# Chip-Like-A-House
 
-## Project Overview
+A lightweight benchmark and toolset for generating and modifying DEF files ('.def'), focusing on rectilinear DIEAREA creation and transformation for large-scale chips. It also provides sample scripts to batch-generate benchmarks featuring multiple rectangular notches/holes.
 
-This repository contains a set of Python scripts and a sample shell script designed to generate and modify `.def` (Design Exchange Format) files, primarily for rectilinear floorplanning with design constraints for large-scale chips. The tools facilitate the creation of basic `.def` outlines and allow for complex rectilinear `DIEAREA` modifications, which are crucial for defining chip boundaries and irregular shapes in integrated circuit layouts.
+## Repository layout
 
-## Features
+- `generate_def.py`: Generate a basic '.def' from scratch (VERSION/UNITS/DIEAREA/ROW/TRACKS with placeholder COMPONENTS/NETS).
+- `modify_def.py`: Rewrite DIEAREA on an existing '.def' to realize L-/U-shapes or multi-hole rectilinear boundaries, with three methods provided.
+- `default_config.json`: Example configuration (for `generate_def.py`).
+- `default_modifier.sh`: Generic batch modifier that calls `modify_def.py` to produce multiple variants.
+- `benchmark/`: Sample '.def' inputs and batch generators/outputs.
+    - `sample_ariane133/`
+        - `input_ariane133.def`
+        - `ariane133_modifier.sh` (outputs to `ariane133_large_rects_15*10^4-10^6/`, etc.)
+    - `sample_ariane136/`
+        - `input_ariane136.def`
+        - `ariane136_modifier.sh` (outputs to `ariane136_large_rects_5*10^5-15*10^5/`, etc.)
+    - `sample_bp_quad/`
+        - `input_bp_quad.def`
+        - `bp_quad_modifier.sh` (outputs to `bp_quad_*` directories)
 
-* **`generate_def.py`**:
-    * Generates a `.def` file based on a specified `DIEAREA` (width and height in Database Units - DBU).
-    * **Configurable Parameters**: Supports JSON configuration files for customizing design parameters, cell libraries, margins, and track specifications.
-    * **Adaptive Margin Calculation**: Automatically calculates I/O margins based on percentage of die size with engineering minimums, accounting for I/O pads, seal rings, power rings, and routing margins.
-    * **Intelligent ROW Generation**: Automatically calculates and includes `ROW` sections with alternating orientations (N/FS), optimized for the available die area after margin calculation.
-    * **Multi-layer TRACKS Support**: Generates `TRACKS` sections for various metal layers (metal1 to metal10 by default) with configurable start points, steps, and layer-specific adjustments.
-    * **Template Generation**: Can save current configuration as a JSON template for reuse and customization.
-    * Outputs a complete, basic `.def` file structure (with `COMPONENTS` and `NETS` empty).
-
-* **`modify_def.py`**:
-    * A versatile tool for modifying the `DIEAREA` section of an existing `.def` file, in order to realize rectilinear floorplanning.
-    * Supports two primary modification modes:
-        * **Rectangle-based Cutouts (`--rectangles` and `--coordinates`)**: Allows you to define rectangular areas (e.g., L-shaped corners, U-shaped notches) to be "cut out" from the original rectangular `DIEAREA`, resulting in a rectilinear shape.
-        * **Direct DIEAREA Line Specification (`--diearea-line`)**: Enables you to directly input a complete rectilinear `DIEAREA` line, providing full control over complex chip boundary definitions.
-        * **Image-based Contour Recognition (`--generate-from-image`)**: Enables you to directly input an image with desired rectilinear shape, and the required width and height. After recognizing the contour with OpenCV and rearranging the coordinates, the `DIEAREA` line will be automatically replaced by the rectilinear one.
-    * Identifies edge and internal points to correctly form the new rectilinear boundary.
-
-* **`modify_sample.sh`**:
-    * A demonstration shell script that showcases various usage examples of `modify_def.py`.
-    * Includes examples for:
-        * Single corner L-shape cutouts (bottom-left, bottom-right, top-left, top-right).
-        * Single edge U-shape/notch cutouts (left, right, top, bottom).
-        * Multiple non-overlapping cutouts (two diagonal corners, three holes, four corners).
-        * Approximating a complex external contour using direct `DIEAREA` line specification.
-    * Creates an `generated_rectilinear_defs` output directory to store modified `.def` files.
+Note: Some output directory names contain asterisks (e.g. `5*10^5`). Quote such paths in the shell to avoid glob expansion.
 
 ## Getting Started
 
-### Prerequisites
+### Requirements
+- Python 3.x (3.8+ recommended)
+- A Unix-like environment (Linux/macOS/WSL)
+- Optional: Git (for version control), OpenCV (if you later add image-to-contour support)
 
-* Python 3.x
-* Git (for version control and cloning this repository)  
-* A Unix-like environment (for running `modify_sample.sh`, e.g., Linux, macOS, WSL on Windows)
-* **Optional**: JSON configuration files for advanced `generate_def.py` usage
-
-### Installation
-
-#### 1. Clone the repository:
-
+### Clone
 ```bash
 git clone https://github.com/SurviveAll/Chip-Like-A-House.git
 cd Chip-Like-A-House
 ```
 
-### Usage
 
-#### 1. Generating a Basic `.def` File (`generate_def.py`)
+## Usage
+### 1. Generate a basic '.def' (generate_def.py)
 
-To generate a new `.def` file with default parameters:
+Given die size in DBU, the script automatically produces:
+- Reasonable margins (max of percentage-based and engineering minimums)
+- Alternating ROW orientations (N/FS)
+- TRACKS for metal1…metal10 (with optional per-layer +1 adjustment)
 
+Usage:
 ```bash
-python generate_def.py -w <width_dbu> -t <height_dbu> -o <output_file_name.def> -d <design_name>
+python generate_def.py -w <width_dbu> -t <height_dbu> -o <output.def> -d <design_name>
 ```
 
-**Advanced Usage with Configuration:**
+With a configuration file:
+```bash
+python generate_def.py -w <width_dbu> -t <height_dbu> -o <output.def> -c <config.json>
+```
 
-* Save current configuration as a template:
+Save the current defaults as a template:
 ```bash
 python generate_def.py --save-config my_template.json
 ```
 
-* Generate with custom JSON configuration:
+Key configuration fields (excerpt):
+- design.name/version/dbu_per_micron
+- cell_library.{name,width,height}
+- margins.{left/right/top/bottom_percent} and {min_left/right/top/bottom}
+- tracks[]: direction/start/step per layer; track_adjustments.add_one_layers: layers that require “+1” DO
+
+The script validates die size to ensure at least one standard cell fits horizontally and at least one ROW fits vertically; otherwise it errors with the required minimum.
+
+### 2. Modify DIEAREA (modify_def.py)
+
+Two main modes are supported:
+#### Describe non-rectangular boundaries via rectangular cutouts
 ```bash
-python generate_def.py -w <width_dbu> -t <height_dbu> -o <output_file.def> -c <config.json>
+python modify_def.py \
+    -i <input.def> -o <output.def> \
+    -r <num_rects> -c <x1 y1 x2 y2 ...> [--verbose]
+```
+- Each rectangle is described by two points:
+    - one on the die edge/corner
+    - one strictly inside the die
+- The script infers which is edge vs internal and emits axis-aligned segments accordingly; multiple non-overlapping cutouts are supported.
+
+#### Provide a full DIEAREA polyline directly
+```bash
+python modify_def.py \
+    -i <input.def> -o <output.def> \
+    --diearea-line "DIEAREA ( x0 y0 ) ( x1 y1 ) ... ( xN yN ) ;" [--verbose]
+```
+- The original DIEAREA line is replaced as-is (no inference).
+
+Validation and errors:
+- The tool exits with an error if the DIEAREA line is missing, the coordinate count is invalid, coordinates are negative or exceed the original die width/height, or both points are either internal or both on the boundary.
+- Consecutive duplicate vertices are removed to keep the polyline clean (axis-aligned with no consecutive duplicates).
+
+## Batch example scripts
+
+Under `benchmark/sample_*`, several scripts (`ariane136_modifier.sh`, `ariane133_modifier.sh`, `bp_quad_modifier.sh`) generate batches of examples:
+
+How they work:
+- Parse the original rectangular DIEAREA from the input '.def'
+- Randomly place “center‑biased” entry points along left/right/top/bottom edges, pair with an internal point to form a rectangular notch
+- Parameters:
+    - NUM_VARIANTS: number of variants (default 20; can be overridden by the first script argument)
+    - MIN/MAX_RECTS: number of rectangular notches per variant
+    - MIN/MAX_DEPTH: notch depth range (capped to at most half of the die dimension)
+    - MAX_TRIES_PER_RECT: attempts per notch placement
+    - DEBUG: set to 1 for verbose logging
+- A small buffer is used to reduce overlap between cutouts, trading density vs safety
+- Outputs are named like `large_001.def`, `small_001.def`, etc.
+
+Note on quoting paths with asterisks:
+```bash
+awk '/^DIEAREA/{print FILENAME":"$0}' "benchmark/sample_ariane136/ariane136_large_rects_5*10^5-15*10^5"/*.def
 ```
 
-**Configuration File Format:**
-The configuration file is a JSON file that allows you to customize:
-- Design parameters (name, version, database units)
-- Cell library specifications (standard cell dimensions)
-- Margin calculations (percentages and minimum values)
-- Track specifications for all metal layers
-- Layer-specific adjustments
+## License
 
-Example configuration structure: (following are the default configuration data)
-```json
-{
-  "design": {
-    "name": "my_design",
-    "version": "5.8",
-    "dbu_per_micron": 2000
-  },
-  "cell_library": {
-    "name": "my_cell_site",
-    "width": 380,
-    "height": 2800
-  },
-  "margins": {
-    "left_percent": 0.005,
-    "right_percent": 0.005,
-    "bottom_percent": 0.005,
-    "top_percent": 0.005,
-    "min_left": 40280,
-    "min_right": 40200,
-    "min_bottom": 42000,
-    "min_top": 48000
-  }
-}
-```
+This repository is released under the MIT License (see LICENSE if present).
 
-#### 2. Add `COMPONENTS` and `NETS` to the Basic `.def` File (manually)
+## Acknowledgements
 
-The `generate_def.py` script creates a `.def` file with empty `COMPONENTS` and `NETS `sections. For a complete and functional `.def` file, you will typically need to populate these sections with your design's components (macros, standard cells) and their interconnections. This step is usually performed by other tools in a standard physical design flow (e.g., placement tools).
-
-#### 3. Modify `DIEAREA` line (`modify_def.py` or `modify_sample.sh`)
-
-As described in the Features section, `modify_def.py` allows you to alter the `DIEAREA` of an existing `.def` file. This is crucial for creating non-rectangular chip boundaries, which can be useful for various purposes like fitting into specific package types or avoiding keep-out zones.
-
-* Directly Specify `DIEAREA` Line
-
-    ```bash
-    python modify_def.py -i <input_def_file> -o <output_def_file> --diearea-line "DIEAREA ( x0 y0 ) ( x1 y1 ) ... ( xN yN ) ;" [--verbose]
-    ```
-
-* Use Rectangles for Cutouts
-
-    ```bash
-    python modify_def.py -i <input_def_file> -o <output_def_file> --rectangles <num_rects> --coordinates <x1 y1 x2 y2 ...> [--verbose]
-    ```
-
-* Apply OpenCV to Transform Contour from an Image
-
-    ```bash
-    python modify_def.py -i <input_def_file> -o <output_def_file> --generate-from-image --width <desired_width> --height <desired_height> [--origin-at-zero] [--verbose]
-    ```
-
-* Batch production using `modify_sample.sh`
-
-    The `modify_sample.sh` script demonstrates various complex DIEAREA modifications using `modify_def.py`. 
-    
-    Before using this bash, make sure you modify the input file:
-
-    ```bash
-    INPUT_DEF="input.def"
-    OUT_DIR="out_defs"
-    ```
-
-    Then execute the script:
-
-    ```bash
-    bash modify_sample.sh
-    ```
-    
-    Contents in `modify_sample.sh` can be adjusted for other applications.
+Examples are inspired by OpenROAD and MacroPlacement by TILOS-AI-Institute.
