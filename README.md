@@ -92,9 +92,9 @@ Validation and errors:
 - The tool exits with an error if the DIEAREA line is missing, the coordinate count is invalid, coordinates are negative or exceed the original die width/height, or both points are either internal or both on the boundary.
 - Consecutive duplicate vertices are removed to keep the polyline clean (axis-aligned with no consecutive duplicates).
 
-## Batch example scripts
+## Batch example scripts (default_modifier.sh)
 
-Under `benchmark/sample_*`, several scripts (`ariane136_modifier.sh`, `ariane133_modifier.sh`, `bp_quad_modifier.sh`) generate batches of examples:
+After some simple edition of parameters, `default_modifier.sh` enables automatic benchmark production of rectilinear floorplans. Under `benchmark/sample_*`, several scripts (`ariane136_modifier.sh`, `ariane133_modifier.sh`, `bp_quad_modifier.sh`) detailedly show how it works:
 
 How they work:
 - Parse the original rectangular DIEAREA from the input `.def`
@@ -106,7 +106,7 @@ How they work:
     - MAX_TRIES_PER_RECT: attempts per notch placement
     - DEBUG: set to 1 for verbose logging
 - A small buffer is used to reduce overlap between cutouts, trading density vs safety
-- Outputs are named like `large_001.def`, `small_001.def`, etc.
+- Outputs are named like `output_001.def`, etc.
 
 Note on quoting paths with asterisks:
 ```bash
