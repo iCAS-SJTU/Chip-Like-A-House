@@ -1,4 +1,4 @@
-# Chip-Like-A-House
+# Chip-Like-A-House: Rectilinear Floorplanning Benchmark with Design Constraints for Large-scale Chips
 
 A lightweight benchmark and toolset for generating and modifying DEF files ('.def'), focusing on rectilinear DIEAREA creation and transformation for large-scale chips. It also provides sample scripts to batch-generate benchmarks featuring multiple rectangular notches/holes.
 
