@@ -58,12 +58,6 @@ Save the current defaults as a template:
 python generate_def.py --save-config my_template.json
 ```
 
-Key configuration fields (excerpt):
-- design.name/version/dbu_per_micron
-- cell_library.{name,width,height}
-- margins.{left/right/top/bottom_percent} and {min_left/right/top/bottom}
-- tracks[]: direction/start/step per layer; track_adjustments.add_one_layers: layers that require “+1” DO
-
 The script validates die size to ensure at least one standard cell fits horizontally and at least one ROW fits vertically; otherwise it errors with the required minimum.
 
 ### 2. Modify DIEAREA (modify_def.py)
@@ -100,11 +94,11 @@ How they work:
 - Parse the original rectangular DIEAREA from the input `.def`
 - Randomly place “center‑biased” entry points along left/right/top/bottom edges, pair with an internal point to form a rectangular notch
 - Parameters:
-    - NUM_VARIANTS: number of variants (default 20; can be overridden by the first script argument)
-    - MIN/MAX_RECTS: number of rectangular notches per variant
-    - MIN/MAX_DEPTH: notch depth range (capped to at most half of the die dimension)
-    - MAX_TRIES_PER_RECT: attempts per notch placement
-    - DEBUG: set to 1 for verbose logging
+    - `NUM_VARIANTS`: number of variants (default 20; can be overridden by the first script argument)
+    - `MIN/MAX_RECTS`: number of rectangular notches per variant
+    - `MIN/MAX_DEPTH`: notch depth range (capped to at most half of the die dimension)
+    - `MAX_TRIES_PER_RECT`: attempts per notch placement
+    - `DEBUG`: set to 1 for verbose logging
 - A small buffer is used to reduce overlap between cutouts, trading density vs safety
 - Outputs are named like `output_001.def`, etc.
 
