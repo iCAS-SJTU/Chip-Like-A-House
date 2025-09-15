@@ -1,14 +1,14 @@
 # Chip-Like-A-House: Rectilinear Floorplanning Benchmark with Design Constraints for Large-scale Chips
 
-A lightweight benchmark and toolset for generating and modifying DEF files ('.def'), focusing on rectilinear DIEAREA creation and transformation for large-scale chips. It also provides sample scripts to batch-generate benchmarks featuring multiple rectangular notches/holes.
+A lightweight benchmark and toolset for generating and modifying DEF files (`.def`), focusing on rectilinear DIEAREA creation and transformation for large-scale chips. It also provides sample scripts to batch-generate benchmarks featuring multiple rectangular notches/holes.
 
 ## Repository layout
 
-- `generate_def.py`: Generate a basic '.def' from scratch (VERSION/UNITS/DIEAREA/ROW/TRACKS with placeholder COMPONENTS/NETS).
-- `modify_def.py`: Rewrite DIEAREA on an existing '.def' to realize L-/U-shapes or multi-hole rectilinear boundaries, with three methods provided.
+- `generate_def.py`: Generate a basic `.def` from scratch (VERSION/UNITS/DIEAREA/ROW/TRACKS with placeholder COMPONENTS/NETS).
+- `modify_def.py`: Rewrite DIEAREA on an existing `.def` to realize L-/U-shapes or multi-hole rectilinear boundaries, with three methods provided.
 - `default_config.json`: Example configuration (for `generate_def.py`).
 - `default_modifier.sh`: Generic batch modifier that calls `modify_def.py` to produce multiple variants.
-- `benchmark/`: Sample '.def' inputs and batch generators/outputs.
+- `benchmark/`: Sample `.def` inputs and batch generators/outputs.
     - `sample_ariane133/`
         - `input_ariane133.def`
         - `ariane133_modifier.sh` (outputs to `ariane133_large_rects_15*10^4-10^6/`, etc.)
@@ -36,7 +36,7 @@ cd Chip-Like-A-House
 
 
 ## Usage
-### 1. Generate a basic '.def' (generate_def.py)
+### 1. Generate a basic `.def` (generate_def.py)
 
 Given die size in DBU, the script automatically produces:
 - Reasonable margins (max of percentage-based and engineering minimums)
@@ -97,7 +97,7 @@ Validation and errors:
 Under `benchmark/sample_*`, several scripts (`ariane136_modifier.sh`, `ariane133_modifier.sh`, `bp_quad_modifier.sh`) generate batches of examples:
 
 How they work:
-- Parse the original rectangular DIEAREA from the input '.def'
+- Parse the original rectangular DIEAREA from the input `.def`
 - Randomly place “center‑biased” entry points along left/right/top/bottom edges, pair with an internal point to form a rectangular notch
 - Parameters:
     - NUM_VARIANTS: number of variants (default 20; can be overridden by the first script argument)
