@@ -4,12 +4,20 @@
 
 PY_SCRIPT="modify_def.py"
 INPUT_DEF="input_ariane133.def"
-OUT_DIR="ariane133_large_rects_15*10^4-10^6"
+OUT_DIR="ariane133_small_rects"
 NUM_VARIANTS=${1:-20}  # Allow command line override
 MIN_RECTS=1
 MAX_RECTS=6
-MIN_DEPTH=150000  
-MAX_DEPTH=1000000
+# Rectangular cutout size constraints
+# Large
+# MIN_DEPTH=300000  
+# MAX_DEPTH=1500000
+# Medium
+# MIN_DEPTH=100000
+# MAX_DEPTH=1000000
+# Small
+MIN_DEPTH=50000
+MAX_DEPTH=200000
 MAX_TRIES_PER_RECT=80  # Retry count
 DEBUG=${DEBUG:-0}      # Set DEBUG=1 to enable debug output
 MAX_ASPECT=5           # Maximum allowed aspect ratio
@@ -202,7 +210,7 @@ for i in $(seq 1 $NUM_VARIANTS); do
     num_rects=1; fallback_count=$((fallback_count+1))
   fi
 
-  outf=$(printf "%s/large_%03d.def" "$OUT_DIR" "$i")
+  outf=$(printf "%s/small_rects_%03d.def" "$OUT_DIR" "$i")
   err_log="$OUT_DIR/err_${i}.log"
   echo "Generating $outf with $num_rects rect(s)..."
 
