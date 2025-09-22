@@ -1,1 +1,0 @@
-sample_black_parrot/black_parrot_large_rects/*.def filter=lfs diff=lfs merge=lfs -text
