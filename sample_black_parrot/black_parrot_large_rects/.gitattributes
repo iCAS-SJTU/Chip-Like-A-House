@@ -1,2 +1,1 @@
-/home/jenny_wyj/ENGR4903J/sample_black_parrot/black_parrot_large_rects/large_rects_001.def filter=lfs diff=lfs merge=lfs -text
-/home/jenny_wyj/ENGR4903J/sample_black_parrot/black_parrot_large_rects/large_rects_002.def filter=lfs diff=lfs merge=lfs -text
+*.def filter=lfs diff=lfs merge=lfs -text
