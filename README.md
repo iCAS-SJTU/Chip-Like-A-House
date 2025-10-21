@@ -11,15 +11,13 @@ A lightweight benchmark and toolset for generating and modifying DEF files (`.de
 - `benchmark/`: Sample `.def` inputs and batch generators/outputs.
     - `sample_ariane133/`
         - `input_ariane133.def`
-        - `ariane133_modifier.sh` (outputs to `ariane133_large_rects_15*10^4-10^6/`, etc.)
+        - `ariane133_modifier.sh` (outputs to `ariane133_large_rects`, etc.)
     - `sample_ariane136/`
         - `input_ariane136.def`
-        - `ariane136_modifier.sh` (outputs to `ariane136_large_rects_5*10^5-15*10^5/`, etc.)
+        - `ariane136_modifier.sh` (outputs to `ariane136_large_rects`, etc.)
     - `sample_bp_quad/`
         - `input_bp_quad.def`
         - `bp_quad_modifier.sh` (outputs to `bp_quad_*` directories)
-
-Note: Some output directory names contain asterisks (e.g. `5*10^5`). Quote such paths in the shell to avoid glob expansion.
 
 ## Getting Started
 
