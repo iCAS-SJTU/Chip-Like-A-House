@@ -8,9 +8,19 @@ A lightweight benchmark and toolset for generating and modifying DEF files (`.de
 - `default_config.json` — example configuration used by `generate_def.py` (defaults for margins, tracks/layers, and other generation options).
 - `modify_def.py` — modify an existing `.def` by replacing its `DIEAREA` with rectilinear floorplans. Supports input of either a set of rectangular cutouts or an image of desired floorplan.
 - `default_modifier.sh` — convenience script that demonstrates batch modification workflows by invoking `modify_def.py` with different parameters.
-- `benchmark/` — collection of sample inputs and small helper scripts showing how to produce variant outputs. Typical contents include example `.def` files (e.g. Ariane and bp_quad samples) and modifier driver scripts that generate the sample outputs.
+- `benchmark/` — collection of sample inputs and helper scripts. Current sample subdirectories include:
+    - `sample_ariane133`
+    - `sample_ariane136`
+    - `sample_black_parrot`
+    - `sample_bp_be`
+    - `sample_bp_fe`
+    - `sample_bp_multi`
+    - `sample_bp_quad`
+    - `sample_sw`
+    - `sample_tr`
+    Each sample directory typically contains an input `.def` (when applicable) and a driver script (e.g. `ariane133_modifier.sh`, `bp_quad_modifier.sh`) that demonstrates batch generation of variants.
 - `README.md` — this file (overview and usage notes).
-- `LICENSE` — ontains the project license.
+- `LICENSE` — contains the project license (if present).
 
 ## Getting Started
 
@@ -41,12 +51,12 @@ python generate_def.py -w <width_dbu> -t <height_dbu> -o <output.def> -d <design
 
 With a configuration file:
 ```bash
-python generate_def.py -w <width_dbu> -t <height_dbu> -o <output.def> -c <config.json>
+python generate_def.py -w <width_dbu> -t <height_dbu> -o <output.def> -c <my_config.json>
 ```
 
 Save the current defaults as a template:
 ```bash
-python generate_def.py --save-config my_template.json
+python generate_def.py --save-config default_config.json
 ```
 
 The script validates die size to ensure at least one standard cell fits horizontally and at least one ROW fits vertically; otherwise it errors with the required minimum.
@@ -78,25 +88,27 @@ Validation and errors:
 - Consecutive duplicate vertices are removed to keep the polyline clean (axis-aligned with no consecutive duplicates).
 
 ## Batch example scripts (default_modifier.sh)
+After editing a few variables at the top of the script, `default_modifier.sh` can be used to produce many rectilinear variants from an input `.def`.
 
-After some simple edition of parameters, `default_modifier.sh` enables automatic benchmark production of rectilinear floorplans. Under `benchmark/sample_*`, several scripts (`ariane136_modifier.sh`, `ariane133_modifier.sh`, `bp_quad_modifier.sh`) detailedly show how it works:
+Key variables and their defaults (at top of `default_modifier.sh`):
 
-How they work:
-- Parse the original rectangular DIEAREA from the input `.def`
-- Randomly place “center‑biased” entry points along left/right/top/bottom edges, pair with an internal point to form a rectangular notch
-- Parameters:
-    - `NUM_VARIANTS`: number of variants (default 20; can be overridden by the first script argument)
-    - `MIN/MAX_RECTS`: number of rectangular notches per variant
-    - `MIN/MAX_DEPTH`: notch depth range (capped to at most half of the die dimension)
-    - `MAX_TRIES_PER_RECT`: attempts per notch placement
-    - `DEBUG`: set to 1 for verbose logging
-- A small buffer is used to reduce overlap between cutouts, trading density vs safety
-- Outputs are named like `output_001.def`, etc.
+- `PY_SCRIPT="modify_def.py"` — Python script invoked to rewrite the DIEAREA.
+- `INPUT_DEF="input_file.def"` — input DEF filename; change this to the sample `.def` you want to modify (e.g. `input_ariane133.def`).
+- `OUT_DIR="out_defs"` — output directory where generated `.def` files and logs are saved.
+- `OUTPUT_PREFIX="small_rects"` — prefix used when naming outputs (`$OUT_DIR/$OUTPUT_PREFIX_001.def`, ...).
+- `NUM_VARIANTS=${1:-20}` — number of variants (default 20; can be overridden by passing a number as the first script argument).
+- `MIN_RECTS`, `MAX_RECTS` — min/max number of rectangular notches per variant (defaults in the script: `1` and `6`).
+- `MIN_DEPTH`, `MAX_DEPTH` — depth range used when carving notches (e.g. `100000`..`500000` by default; each depth is capped to at most half the die dimension).
+- `MAX_TRIES_PER_RECT` — how many placement attempts per notch (default 80).
+- `DEBUG` — set `DEBUG=1` in the environment to enable verbose output.
 
-Note on quoting paths with asterisks:
+For each successful variant the script calls:
+
 ```bash
-awk '/^DIEAREA/{print FILENAME":"$0}' "benchmark/sample_ariane136/ariane136_large_rects_5*10^5-15*10^5"/*.def
+python3 "${PY_SCRIPT}" -i "${INPUT_DEF}" -o "${OUT_DIR}/${OUTPUT_PREFIX}_NNN.def" -r <num_rects> -c <x1 y1 x2 y2 ...>
 ```
+
+and writes an accompanying error log `err_NNN.log` if `modify_def.py` returns a non-zero exit status. Successful runs remove empty error logs.
 
 ## License
 
