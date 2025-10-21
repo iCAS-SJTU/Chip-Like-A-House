@@ -4,20 +4,13 @@ A lightweight benchmark and toolset for generating and modifying DEF files (`.de
 
 ## Repository layout
 
-- `generate_def.py`: Generate a basic `.def` from scratch (VERSION/UNITS/DIEAREA/ROW/TRACKS with placeholder COMPONENTS/NETS).
-- `modify_def.py`: Rewrite DIEAREA on an existing `.def` to realize L-/U-shapes or multi-hole rectilinear boundaries, with three methods provided.
-- `default_config.json`: Example configuration (for `generate_def.py`).
-- `default_modifier.sh`: Generic batch modifier that calls `modify_def.py` to produce multiple variants.
-- `benchmark/`: Sample `.def` inputs and batch generators/outputs.
-    - `sample_ariane133/`
-        - `input_ariane133.def`
-        - `ariane133_modifier.sh` (outputs to `ariane133_large_rects`, etc.)
-    - `sample_ariane136/`
-        - `input_ariane136.def`
-        - `ariane136_modifier.sh` (outputs to `ariane136_large_rects`, etc.)
-    - `sample_bp_quad/`
-        - `input_bp_quad.def`
-        - `bp_quad_modifier.sh` (outputs to `bp_quad_*` directories)
+- `generate_def.py` — generate a minimal, standards‑aware `.def` file from die dimensions. 
+- `default_config.json` — example configuration used by `generate_def.py` (defaults for margins, tracks/layers, and other generation options).
+- `modify_def.py` — modify an existing `.def` by replacing its `DIEAREA` with rectilinear floorplans. Supports input of either a set of rectangular cutouts or an image of desired floorplan.
+- `default_modifier.sh` — convenience script that demonstrates batch modification workflows by invoking `modify_def.py` with different parameters.
+- `benchmark/` — collection of sample inputs and small helper scripts showing how to produce variant outputs. Typical contents include example `.def` files (e.g. Ariane and bp_quad samples) and modifier driver scripts that generate the sample outputs.
+- `README.md` — this file (overview and usage notes).
+- `LICENSE` — ontains the project license.
 
 ## Getting Started
 
