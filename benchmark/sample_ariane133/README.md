@@ -1,0 +1,113 @@
+## Floorplan plots and corresponding .def files
+
+Below is a visual gallery of the generated floorplans. Click any image to open the corresponding `.def` file in the `def_files/` folder.
+
+Layout: images are arranged roughly 4 per row on wide screens and will wrap to 3 (or fewer) per row on narrower screens for better readability.
+
+---
+
+<table>
+	<tbody>
+		<tr>
+			<td align="center">
+				<a href="def_files/large_rects_001.def"><img src="floorplan_plots/large_rects_001.png" alt="large_rects_001" width="260"></a><br>
+				<sub>large_rects_001.def</sub>
+			</td>
+			<td align="center">
+				<a href="def_files/large_rects_002.def"><img src="floorplan_plots/large_rects_002.png" alt="large_rects_002" width="260"></a><br>
+				<sub>large_rects_002.def</sub>
+			</td>
+			<td align="center">
+				<a href="def_files/large_rects_003.def"><img src="floorplan_plots/large_rects_003.png" alt="large_rects_003" width="260"></a><br>
+				<sub>large_rects_003.def</sub>
+			</td>
+			<td align="center">
+				<a href="def_files/large_rects_004.def"><img src="floorplan_plots/large_rects_004.png" alt="large_rects_004" width="260"></a><br>
+				<sub>large_rects_004.def</sub>
+			</td>
+		</tr>
+		<tr>
+			<td align="center">
+				<a href="def_files/large_rects_005.def"><img src="floorplan_plots/large_rects_005.png" alt="large_rects_005" width="260"></a><br>
+				<sub>large_rects_005.def</sub>
+			</td>
+			<td align="center">
+				<a href="def_files/large_rects_006.def"><img src="floorplan_plots/large_rects_006.png" alt="large_rects_006" width="260"></a><br>
+				<sub>large_rects_006.def</sub>
+			</td>
+			<td align="center">
+				<a href="def_files/large_rects_008.def"><img src="floorplan_plots/large_rects_008.png" alt="large_rects_008" width="260"></a><br>
+				<sub>large_rects_008.def</sub>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td align="center">
+				<a href="def_files/medium_rects_001.def"><img src="floorplan_plots/medium_rects_001.png" alt="medium_rects_001" width="260"></a><br>
+				<sub>medium_rects_001.def</sub>
+			</td>
+			<td align="center">
+				<a href="def_files/medium_rects_002.def"><img src="floorplan_plots/medium_rects_002.png" alt="medium_rects_002" width="260"></a><br>
+				<sub>medium_rects_002.def</sub>
+			</td>
+			<td align="center">
+				<a href="def_files/medium_rects_003.def"><img src="floorplan_plots/medium_rects_003.png" alt="medium_rects_003" width="260"></a><br>
+				<sub>medium_rects_003.def</sub>
+			</td>
+			<td align="center">
+				<a href="def_files/medium_rects_004.def"><img src="floorplan_plots/medium_rects_004.png" alt="medium_rects_004" width="260"></a><br>
+				<sub>medium_rects_004.def</sub>
+			</td>
+		</tr>
+		<tr>
+			<td align="center">
+				<a href="def_files/medium_rects_005.def"><img src="floorplan_plots/medium_rects_005.png" alt="medium_rects_005" width="260"></a><br>
+				<sub>medium_rects_005.def</sub>
+			</td>
+			<td align="center">
+				<a href="def_files/medium_rects_007.def"><img src="floorplan_plots/medium_rects_007.png" alt="medium_rects_007" width="260"></a><br>
+				<sub>medium_rects_007.def</sub>
+			</td>
+			<td align="center">
+				<a href="def_files/medium_rects_008.def"><img src="floorplan_plots/medium_rects_008.png" alt="medium_rects_008" width="260"></a><br>
+				<sub>medium_rects_008.def</sub>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td align="center">
+				<a href="def_files/small_rects_001.def"><img src="floorplan_plots/small_rects_001.png" alt="small_rects_001" width="260"></a><br>
+				<sub>small_rects_001.def</sub>
+			</td>
+			<td align="center">
+				<a href="def_files/small_rects_004.def"><img src="floorplan_plots/small_rects_004.png" alt="small_rects_004" width="260"></a><br>
+				<sub>small_rects_004.def</sub>
+			</td>
+			<td align="center">
+				<a href="def_files/small_rects_005.def"><img src="floorplan_plots/small_rects_005.png" alt="small_rects_005" width="260"></a><br>
+				<sub>small_rects_005.def</sub>
+			</td>
+			<td align="center">
+				<a href="def_files/small_rects_008.def"><img src="floorplan_plots/small_rects_008.png" alt="small_rects_008" width="260"></a><br>
+				<sub>small_rects_008.def</sub>
+			</td>
+		</tr>
+		<tr>
+			<td align="center">
+				<a href="def_files/small_rects_009.def"><img src="floorplan_plots/small_rects_009.png" alt="small_rects_009" width="260"></a><br>
+				<sub>small_rects_009.def</sub>
+			</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+---
+
+Notes:
+
+- Images are located in the `floorplan_plots/` folder and the .def files are in `def_files/`.
+- If you'd like a different number of thumbnails per row (e.g., exactly 3 per row), I can switch the layout or add CSS/HTML tweaks.
+
