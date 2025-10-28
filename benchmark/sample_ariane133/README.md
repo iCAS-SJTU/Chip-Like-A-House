@@ -2,8 +2,6 @@
 
 Below is a visual gallery of the generated floorplans. Click any image to open the corresponding `.def` file in the `def_files/` folder.
 
-Layout: images are arranged roughly 4 per row on wide screens and will wrap to 3 (or fewer) per row on narrower screens for better readability.
-
 ---
 
 <table>
@@ -109,5 +107,3 @@ Layout: images are arranged roughly 4 per row on wide screens and will wrap to 3
 Notes:
 
 - Images are located in the `floorplan_plots/` folder and the .def files are in `def_files/`.
-- If you'd like a different number of thumbnails per row (e.g., exactly 3 per row), I can switch the layout or add CSS/HTML tweaks.
-
