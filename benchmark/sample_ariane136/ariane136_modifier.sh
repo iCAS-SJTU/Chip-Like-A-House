@@ -84,7 +84,7 @@ for i in $(seq 1 $NUM_VARIANTS); do
       fi
       [ $depth -lt 2 ] && depth=2
 
-  typ=$(python3 "$(dirname "$0")/tools/rng_helper.py" --seed "${seed}_${j}_${tries}" --uniform 0 7)
+  typ=$(python3 "$(dirname "$0")/rng_helper.py" --seed "${seed}_${j}_${tries}" --uniform 0 7)
   log_debug "    Selected placement type (from rng_helper): $typ"
 
       existing_count=$(( ${#coords[@]} / 4 ))
@@ -134,7 +134,7 @@ for i in $(seq 1 $NUM_VARIANTS); do
                 center=$(( y1 - corner_margin - span/2 ))
               fi
             else
-              r=$(python3 "$(dirname "$0")/tools/rng_helper.py" --seed "$((s+tries))" --mu "$ASPECT_CENTER" --sigma 0.30 --min "$ASPECT_MIN" --max "$ASPECT_MAX")
+              r=$(python3 "$(dirname "$0")/rng_helper.py" --seed "$((s+tries))" --mu "$ASPECT_CENTER" --sigma 0.30 --min "$ASPECT_MIN" --max "$ASPECT_MAX")
               span=$(awk -v d=$depth -v r=$r 'BEGIN{printf("%d", int(r*d + 0.5))}')
               if [ $span -lt $span_low ]; then span=$span_low; fi
               if [ $span -gt $span_high ]; then span=$span_high; fi
@@ -199,7 +199,7 @@ for i in $(seq 1 $NUM_VARIANTS); do
                 center=$(( y1 - corner_margin - span/2 ))
               fi
             else
-              r=$(python3 "$(dirname "$0")/tools/rng_helper.py" --seed "$((s+tries))" --mu "$ASPECT_CENTER" --sigma 0.30 --min "$ASPECT_MIN" --max "$ASPECT_MAX")
+              r=$(python3 "$(dirname "$0")/rng_helper.py" --seed "$((s+tries))" --mu "$ASPECT_CENTER" --sigma 0.30 --min "$ASPECT_MIN" --max "$ASPECT_MAX")
               span=$(awk -v d=$depth -v r=$r 'BEGIN{printf("%d", int(r*d + 0.5))}')
               if [ $span -lt $span_low ]; then span=$span_low; fi
               if [ $span -gt $span_high ]; then span=$span_high; fi
@@ -264,7 +264,7 @@ for i in $(seq 1 $NUM_VARIANTS); do
                 center=$(( x1 - corner_margin - span/2 ))
               fi
             else
-              r=$(python3 "$(dirname "$0")/tools/rng_helper.py" --seed "$((s+tries))" --mu "$ASPECT_CENTER" --sigma 0.30 --min "$ASPECT_MIN" --max "$ASPECT_MAX")
+              r=$(python3 "$(dirname "$0")/rng_helper.py" --seed "$((s+tries))" --mu "$ASPECT_CENTER" --sigma 0.30 --min "$ASPECT_MIN" --max "$ASPECT_MAX")
               span=$(awk -v d=$depth -v r=$r 'BEGIN{printf("%d", int(r*d + 0.5))}')
               if [ $span -lt $span_low ]; then span=$span_low; fi
               if [ $span -gt $span_high ]; then span=$span_high; fi
@@ -329,7 +329,7 @@ for i in $(seq 1 $NUM_VARIANTS); do
                 center=$(( x1 - corner_margin - span/2 ))
               fi
             else
-              r=$(python3 "$(dirname "$0")/tools/rng_helper.py" --seed "$((s+tries))" --mu "$ASPECT_CENTER" --sigma 0.30 --min "$ASPECT_MIN" --max "$ASPECT_MAX")
+              r=$(python3 "$(dirname "$0")/rng_helper.py" --seed "$((s+tries))" --mu "$ASPECT_CENTER" --sigma 0.30 --min "$ASPECT_MIN" --max "$ASPECT_MAX")
               span=$(awk -v d=$depth -v r=$r 'BEGIN{printf("%d", int(r*d + 0.5))}')
               if [ $span -lt $span_low ]; then span=$span_low; fi
               if [ $span -gt $span_high ]; then span=$span_high; fi
