@@ -2,12 +2,6 @@
 
 Below is a visual gallery of the generated floorplans. Click any image to open the corresponding `.def` file in the `def_files/` folder.
 
----
-
-<style>
-.fp-img { margin-right: 8px; }
-</style>
-
 <table>
 	<tbody>
 		<tr>
@@ -88,8 +82,3 @@ Below is a visual gallery of the generated floorplans. Click any image to open t
 				<sub>small_rects_010.def</sub>
 			</td>
 		</tr>
----
-
-Notes:
-
-- Images are located in the `floorplan_plots/` folder and the .def files are in `def_files/`.
