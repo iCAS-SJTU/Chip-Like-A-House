@@ -66,7 +66,7 @@ Below is a visual gallery of the generated floorplans. Click any image to open t
 				<sub>small_rects_001.def</sub>
 			</td>
 			<td align="center">
-				<a href="def_files/small_rects_002.def"><img class="fp-img" src="floorplan_plots/small_rects_002.png" alt="small_rects_002" width="260"><br>
+				<a href="def_files/small_rects_002.def"><img class="fp-img" src="floorplan_plots/small_rects_002.png" alt="small_rects_002" width="260"></a><br>
 				<sub>small_rects_002.def</sub>
 			</td>
 			<td align="center">
@@ -78,7 +78,7 @@ Below is a visual gallery of the generated floorplans. Click any image to open t
 				<sub>small_rects_004.def</sub>
 			</td>
 			<td align="center">
-				<a href="def_files/small_rects_005.def"><img class="fp-img" src="floorplan_plots/small_rects_005.png" alt="small_rects_005" width="260"><br>
+				<a href="def_files/small_rects_005.def"><img class="fp-img" src="floorplan_plots/small_rects_005.png" alt="small_rects_005" width="260"></a><br>
 				<sub>small_rects_005.def</sub>
 			</td>
 		</tr>
