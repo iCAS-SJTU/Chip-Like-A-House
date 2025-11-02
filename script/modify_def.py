@@ -167,7 +167,7 @@ def generate_diearea_from_image(image_path, target_width, target_height, origin_
     for p in final_points_list:
         die_area_str += f"( {p[0]} {p[1]} ) "
     
-    return die_area_str.strip() + ";"
+    return die_area_str.strip() + " ;"
 
 # --- DEF File Processing Functions ---
 
