@@ -4,7 +4,7 @@ A lightweight benchmark and toolset for generating and modifying DEF files (`.de
 
 ## Benchmark Overview
 
-| Design name | Design gallery (click to open corresponding folder) | Input sources for DEAMPlace floorplanning | DEF amounts | Legality rate |
+| Design name | Design gallery (click to open corresponding folder) | Source files for floorplanning | DEF amounts | Legality rate |
 |:---:|---|---|:---:|:---:|
 | Ariane133 | [![Ariane133](gallery/gallery_ariane133.jpg)](benchmark/sample_ariane133/) | [Nangate45.lef](benchmark/sample_ariane133/input_sources/Nangate45.lef)<br>[Nangate45_tech.lef](benchmark/sample_ariane133/input_sources/Nangate45_tech.lef)<br>[Ng45_ariane133.v](benchmark/sample_ariane133/input_sources/Ng45_ariane133.v)<br>[fake_macros.lef](benchmark/sample_ariane133/input_sources/fake_macros.lef)<br>[fakeram45_256x16.lef](benchmark/sample_ariane133/input_sources/fakeram45_256x16.lef) | 18 | 85.1% |
 | Ariane136 | [![Ariane136](gallery/gallery_ariane136.jpg)](benchmark/sample_ariane136/) | [Nangate45.lef](benchmark/sample_ariane136/input_sources/Nangate45.lef)<br>[Nangate45_tech.lef](benchmark/sample_ariane136/input_sources/Nangate45_tech.lef)<br>[Ng45_ariane136.v](benchmark/sample_ariane136/input_sources/Ng45_ariane136.v)<br>[fake_macros.lef](benchmark/sample_ariane136/input_sources/fake_macros.lef)<br>[fakeram45_256x16.lef](benchmark/sample_ariane136/input_sources/fakeram45_256x16.lef) | 18 | 92.6% |
