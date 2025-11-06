@@ -1,4 +1,4 @@
-# Chip-Like-A-House: Rectilinear Floorplanning Benchmark with Design Constraints for Large-scale Chips
+# R-Zoo: A Rectilinear Floorplan Benchmark Dataset for EDA Physical Design Research
 
 A lightweight benchmark and toolset for generating and modifying DEF files (`.def`), focusing on the variety of rectilinear DIEAREA creation and transformation for large-scale chips. It also provides sample scripts to batch-generate benchmarks featuring multiple rectangular notches/holes.
 
