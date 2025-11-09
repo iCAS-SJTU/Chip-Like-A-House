@@ -19,26 +19,43 @@ A lightweight benchmark and toolset for generating and modifying DEF files (`.de
 
 The detailed layout of the repository is listed as follows:
 
-```graphql
-├── dataset/                   # Benchmark floorplans for seven designs 
-│   └── sample_design/         # Individual design folder with DEF files, plots, inputs, and scripts
-│       ├── def_files/         # Batch of DEF files, ordered by size and number of cutouts (.def)
-│       ├── floorplan_plots/   # DREAMPlace floorplan visualizations matching DEF files (.png)
-│       ├── input_sources/     # Verilog and LEF input files used for synthesis (.v, .lef)
-│       ├── input_floorplan.def  # Input rectangular DEF for the modifier (.def)
-│       ├── design_modifier.sh   # Bash script for benchmark production (.sh)
+```text
+├── dataset/                     # Benchmark floorplans for seven designs
+│   └── sample_<design>/         # Per-design folder with DEFs, plots, inputs, and scripts
+│       ├── def_files/           # Batch of DEF files, ordered by size and number of cutouts (.def)
+│       ├── floorplan_plots/     # Floorplan visualizations matching DEF files (.png)
+│       ├── input_sources/       # Verilog and LEF input files used for synthesis (.v, .lef)
+│       ├── input_<design>.def   # Base rectangular DEF for the modifier (.def)
+│       ├── <design>_modifier.sh # Bash script for rectilinear floorplan production (.sh)
 │       └── README.md            # Visual gallery linking images to corresponding DEF files (.md)
 │
-├── scripts/                   # Scripts for floorplan generation and modification
-│   ├── generate_def.py        # Generates rectangular floorplans from scratch (.py)
-│   ├── default_config.json    # Default configuration parameters for generate_def.py (.json)
-│   ├── modify_def.py          # Converts rectangular floorplans into rectilinear ones (.py)
-│   ├── default_modifier.sh    # Batch script for rectilinear floorplan production (.sh)
-│   └── rng_helper.py          # RNG utility supporting random generation logic (.py)
+├── scripts/                     # Tools for floorplan generation and modification
+│   ├── generate_def.py          # Generates rectangular floorplans from scratch (.py)
+│   ├── modify_def.py            # Converts rectangular floorplans into rectilinear ones (.py)
+│   ├── default_modifier.sh      # Batch script for rectilinear floorplan production (.sh)
+│   ├── default_config.json      # Default configuration for generate_def.py (.json)
+│   └── rng_helper.py            # RNG utilities used in random generation (.py)
 │
-├── gallery/                   # Visualization collection for all generated floorplans
+├── CV_application/              # Image-driven DIEAREA generation showcase
+│   ├── original_outlines/       # Input outline images (PNG)
+│   ├── generated_floorplans_ariane136/  # Visualizations generated from outlines (PNG)
+│   ├── generated_defs_ariane136/        # Corresponding generated DEFs
+│   └── README.md
 │
-└── README.md                  # Repository overview and usage instructions (.md)
+├── for_modeling/                # Modeling-oriented subset (multimodal data for ML)
+│   ├── dataset/                 # Mirrors dataset/ structure for modeling experiments
+│   │   └── sample_<design>/     # See structure under dataset/ above
+│   ├── scripts/                 # Local copies of generation/modification tools
+│   └── README.md
+│
+├── for_evaluation/              # Ready-to-use DEFs for algorithm evaluation
+│   ├── *_single_notch.def       # Single-notch evaluation cases (per design)
+│   ├── *_multi_notch.def        # Multi-notch evaluation cases (per design)
+│   └── README.md
+│
+├── gallery/                     # Visualization thumbnails for designs (used in tables)
+│
+└── README.md                    # Repository overview and usage instructions (.md)
 ```
 
 ## Getting Started
