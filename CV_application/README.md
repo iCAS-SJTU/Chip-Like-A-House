@@ -1,6 +1,6 @@
-# R-Zoo CV Application subset: Image-Driven Floorplan Outlines and DEF Mapping
+# R-Zoo: CV Application Subset — Image-Driven Floorplan Outlines and DEF Mapping
 
-This directory showcases rectilinear chip floorplan DIEAREA generation from 2D outline images. The table below pairs each original outline image with its generated floorplan visualization and links directly to the corresponding DEF file for inspection or reuse.
+A lightweight subset demonstrating DIEAREA generation from 2D outline images. The gallery below pairs each original outline with its generated floorplan and links to the corresponding DEF for inspection or reuse.
 
 ## Outline ↔ Generated Floorplan ↔ DEF
 
@@ -21,13 +21,13 @@ This directory showcases rectilinear chip floorplan DIEAREA generation from 2D o
 
 ---
 
-## Directory Structure
+## Repository layout
 
 - `original_outlines/` – Raw outline PNG images (shape masks / silhouettes) serving as input.
 - `generated_defs_ariane136/` – Output DEF floorplans for the Ariane136 design using image-derived DIEAREAs.
 - `generated_floorplans_ariane136/` – Visualization PNGs corresponding to each generated DEF.
 
-## Reproduction Workflow
+## Usage
 
 DEFs are produced via the repository tool `scripts/modify_def.py` using the image generation mode `--generate-from-image`.
 
@@ -58,7 +58,7 @@ for i in $(seq 1 10); do
 done
 ```
 
-Key parameters:
+Notes:
 
 - `--width/--height` – Target DIEAREA bounding box dimensions (same unit as input DEF).
 - `--origin-at-zero` – Translates polygon so min x/y become (0,0) for cleaner coordinates.
@@ -66,17 +66,21 @@ Key parameters:
 
 Tip: Adjust width/height for alternative aspect ratios; confirm DBU per micron if not 2000. Convert µm × DBU/µm when designing new shapes.
 
-## Visualization Notes
+## Visualization
 
-`generated_floorplans_ariane136/*.png` act as quick-look previews of the DIEAREA geometry and any internal rectilinear notches. To regenerate visuals you can parse the DEF `DIEAREA` polyline and plot with a simple Python script (matplotlib or OSpenCV), or feed into existing EDA visualization flows.
+`generated_floorplans_ariane136/*.png` act as quick-look previews of the DIEAREA geometry and internal rectilinear notches. To regenerate visuals, parse the DEF `DIEAREA` polyline and plot with a simple Python script (matplotlib or OpenCV), or feed into existing EDA visualization flows.
 
-## Adaptation & Extension
+## Extending
 
 - Switch design: change `-i` to another base rectangular DEF (e.g. `dataset/sample_*/input_floorplan.def`).
 - New outlines: drop additional PNGs into `original_outlines/` and rerun the loop.
 - Composite shapes: pre-combine masks before conversion for multi-notch experimentation.
 
-## License & Acknowledgements
+## License
 
-Released under the MIT License (see repository root). Image-driven conversion leverages the main tool `scripts/modify_def.py`. Inspirations include OpenROAD and MacroPlacement from the broader open-source EDA ecosystem.
+This subset follows the repository’s MIT License (see LICENSE if present).
+
+## Acknowledgements
+
+Image-driven conversion leverages the main tool `scripts/modify_def.py`. Inspirations include OpenROAD and MacroPlacement by TILOS-AI-Institute.
 

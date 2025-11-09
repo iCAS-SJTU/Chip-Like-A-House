@@ -1,8 +1,8 @@
-# R-Zoo Evaluation Subset: Rectilinear Floorplan Benchmarks
+# R-Zoo: Evaluation Subset — Rectilinear Floorplan Benchmarks
 
 Benchmarking is fundamental to advancing physical design automation, as it enables quantitative and reproducible comparison of competing algorithms. R-Zoo provides a standardized collection of rectilinear floorplans featuring diverse notch patterns, aspect ratios, and whitespace distributions, allowing researchers to test optimization algorithms under controlled yet realistic conditions. Designs range from single-notch layouts to multi-notch floorplans, ensuring broad coverage across possible scenarios. Each layout is verified for legality and can be directly integrated into open-source flows such as DREAMPlace and OpenROAD, offering a reproducible and extensible environment for evaluating placement quality, whitespace utilization, and congestion metrics. This subset is particularly suitable for assessing rectilinear-aware placement algorithms, whitespace diagnosis frameworks, and topology-driven co-optimization methods.
 
-## Benchmark Inventory
+## Subset Overview
 
 | Design | Single-notch | Multi-notch |
 |:------:|:------------:|:-----------:|
@@ -16,7 +16,7 @@ Benchmarking is fundamental to advancing physical design automation, as it enabl
 
 > Notes: All DEFs share the same LEF/tech LEF stacks as in the main dataset for their respective designs (see `dataset/sample_*/input_sources/`). Ensure consistent DBU per micron when mixing with other sources.
 
-## How to Use
+## Usage
 
 These DEFs are plug-in benchmarks for physical design research:
 
@@ -30,7 +30,7 @@ Minimal guidance:
 2) Import the chosen DEF into your flow (OpenROAD, DREAMPlace, etc.).
 3) Run your standard placement recipe and log metrics (HPWL, density/overflow, congestion score). Fix seeds for reproducibility.
 
-## Reporting Checklist
+## Reporting
 
 - Identify design (e.g., Ariane136) and notch class (single vs. multi).
 - Record key metrics: HPWL, placement density/overflow, congestion proxy (and timing proxy if applicable).
@@ -39,5 +39,9 @@ Minimal guidance:
 
 ## License
 
-This subset follows the repository’s MIT License. See the root README for acknowledgements and tool references.
+This subset follows the repository’s MIT License (see LICENSE if present).
+
+## Acknowledgements
+
+Tools and flows referenced include DREAMPlace and OpenROAD; see the root README for additional credits.
 

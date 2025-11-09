@@ -38,8 +38,8 @@ The detailed layout of the repository is listed as follows:
 │
 ├── CV_application/              # Image-driven DIEAREA generation showcase
 │   ├── original_outlines/       # Input outline images (PNG)
-│   ├── generated_floorplans_ariane136/  # Visualizations generated from outlines (PNG)
-│   ├── generated_defs_ariane136/        # Corresponding generated DEFs
+│   ├── generated_floorplans_<design>/  # Visualizations generated from outlines (PNG)
+│   ├── generated_defs_<design>/        # Corresponding generated DEFs
 │   └── README.md
 │
 ├── for_modeling/                # Modeling-oriented subset (multimodal data for ML)

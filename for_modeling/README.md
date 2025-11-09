@@ -1,8 +1,8 @@
-# R-Zoo Modeling Subset: Dataset for Learning-Based Floorplan Modeling
+# R-Zoo: Modeling Subset — Learning-Based Floorplan Dataset
 
-This modeling-focused subset of R-Zoo provides multimodal (image + DEF) rectilinear floorplans for seven open-source SoC / tile designs. It is tailored for supervised, semi-supervised, and self-supervised learning tasks in physical design research.
+A multimodal (DEF + image) collection of rectilinear floorplans for seven open-source SoC / tile designs. Tailored for supervised, semi-/self-supervised learning tasks in physical design (e.g., whitespace prediction, reconstruction, placement optimization).
 
-## Design Overview
+## Subset Overview
 
 | Design | Gallery (click to open design folder) | Sources (LEF/Verilog) | # DEFs |
 |:-----:|:---------------------------------------|:----------------------|:-----:|
@@ -20,7 +20,7 @@ This modeling-focused subset of R-Zoo provides multimodal (image + DEF) rectilin
 
 With the growing adoption of data-driven, learning-based EDA methodologies, the availability of structured and validated layout data has become increasingly important. R-Zoo offers both image-based and DEF-based representations of floorplans, making it ideal for supervised and self-supervised learning tasks that combine geometric features. The dataset can be used to train neural networks for tasks such as whitespace prediction, layout reconstruction, or floorplan placement optimization. The synchronized multimodal data enables model developers to exploit physical design cues, while the verified legality of each layout ensures that learned representations remain physically valid. Moreover, the built-in scripts supporting layout modification allow scalable dataset expansion, enabling researchers to easily synthesize new variants for training and ablation studies.
 
-## Folder Structure
+## Repository layout
 
 ```
 for_modeling/
@@ -46,7 +46,9 @@ for_modeling/
 - Geometry (DEF): Precise DIEAREA polygon, ROW placements, TRACKS, site grid — forms the structural input for graph-based or sequence models.
 - Raster (PNG): Floorplan visualizations (macro silhouettes + notch contours) — suitable for CNN/ViT feature extraction and multimodal fusion.
 
-## Data Loading Tips
+## Usage
+
+### Data loading tips
 
 1. Use file name tokens (`small_rects_###`, `medium_rects_###`, `large_rects_###`) to auto-label notch depth classes.
 2. Parse DIEAREA polygon: look for the line beginning with `DIEAREA` and collect `( x y )` coordinate pairs until `;`.
@@ -54,7 +56,7 @@ for_modeling/
 4. Align PNG to DEF: Indices are consistent; e.g. `medium_rects_003.png` ↔ `medium_rects_003.def`.
 5. Normalize coordinates by DIEAREA width/height for model-invariant scaling.
 
-## Extending the Dataset
+### Extending
 
 To synthesize new variants:
 
@@ -77,7 +79,7 @@ python3 ../../scripts/modify_def.py -i input_<design>.def -o def_files/img_001.d
 	--generate-from-image path/to/mask.png --width 6000000 --height 4000000 --origin-at-zero
 ```
 
-## Recommended Splits
+### Recommended splits
 
 | Split | Suggested Ratio | Strategy |
 |-------|-----------------|----------|
@@ -87,15 +89,21 @@ python3 ../../scripts/modify_def.py -i input_<design>.def -o def_files/img_001.d
 
 Deterministic splits can be seeded via file name hashing (e.g., SHA1 mod 100).
 
-## Quality & Legality
+### Quality & legality
 
 All distributed DEFs have validated DIEAREA polygons and non-overlapping macro placements (source verification performed when produced). This reduces label noise and prevents models from learning physically invalid geometry. Always re-check legality if you substantially alter generation parameters.
 
-## Citation & License
+## License
+
+Distributed under MIT License; see root LICENSE file if present.
+
+## Acknowledgements
+
+Main flow and generation concepts inspired by open-source physical design efforts including OpenROAD and MacroPlacement.
 
 Please cite the main R-Zoo repository if using this modeling subset in publications. Distributed under MIT License; see root LICENSE file if present.
 
 ---
 
-Happy modeling! Feel free to extend with additional modal encodings (e.g., netlists or timing abstracts) to enrich downstream learning tasks.
+Happy modeling! Extend with additional modal encodings (e.g., netlists or timing abstracts) to enrich downstream learning tasks.
 
