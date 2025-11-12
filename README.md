@@ -76,7 +76,7 @@ cd Chip-Like-A-House
 
 
 ## Usage
-### 1) Generate a basic `.def` (scripts/generate_def.py)
+### 1 Generate a basic `.def` (scripts/generate_def.py)
 
 Given DIE width/height in DBU, the generator produces:
 - Reasonable margins (max of percentage-based and engineering minimums)
@@ -102,7 +102,7 @@ Notes:
 - Units: DBU per micron is set by the UNITS line in the generated DEF (default 2000 DBU/µm). Convert microns to DBU as needed.
 - Validation: if the die is too small to fit at least one standard cell-wide ROW, the tool errors and prints the minimum required size.
 
-### 2) Modify DIEAREA (scripts/modify_def.py)
+### 2 Modify DIEAREA (scripts/modify_def.py)
 
 Two primary modes are supported.
 
@@ -141,7 +141,7 @@ python3 scripts/modify_def.py \
 - width/height are target DIEAREA dimensions in the same unit as your DEF (typically DBU). If your DEF uses 2000 DBU/µm and you want 3000 µm wide, pass 6,000,000.
 - Use `--origin-at-zero` to translate the polygon so the minimum x/y becomes (0,0).
 
-### 3) Batch generation options
+### 3 Batch generation options
 
 You have two convenient ways to produce many rectilinear variants.
 
@@ -175,13 +175,25 @@ Outputs appear under the script’s configured `OUT_DIR` (e.g., `ariane133_small
 
 Tip: Pre-generated datasets are already included under `dataset/sample_*/def_files/`. You can regenerate to a new folder and compare.
 
-### 4) Troubleshooting
+### 4 Troubleshooting
 - OpenCV import error: Install OpenCV (see Requirements). Image mode is optional; other modes don’t require it.
 - “DIEAREA line not found”: Ensure your input DEF contains a valid `DIEAREA ... ;` line.
 - “Coordinate count must be ...”: For `-r N`, you must pass exactly `4*N` integers after `-c`.
 - “One point must be inside and one on the edge”: Recheck each rectangle’s pair semantics.
 - Units mismatch: Keep all coordinates in the same unit as the DEF (DBU). Convert from microns using your DBU/µm.
 - Permission denied when running `.sh`: `chmod +x scripts/*.sh dataset/sample_*/**/*.sh`.
+
+## Validation
+We validate all generated DEF files by conducting three different experiments:
+1. Geometric Legality and DEF Verification: All generated DEF files are checked for geometric legality, ensuring that the DIEAREA definitions are valid and conform to DEF specifications.
+![LLM-Assisted Layout Legality Verification](/Users/tttiko/Desktop/Chip-Like-A-House/Figure/Fig4_LLM_verification.pdf)
+
+2. Consistency Between Image and Layout: We compare the CV generated layout against the input def file to ensure that the layout is consistent with the visual representation.
+![Layout Consistency Metrics (IoU and SSIM per Design)](/Users/tttiko/Desktop/Chip-Like-A-House/Figure/Fig5_Consistency_verification.pdf)
+
+3. Data Coverage and Diversity Analysis: We analyze the generated layouts to ensure a diverse set of designs is produced, covering various architectural styles and design constraints.
+![Distribution of rectilinear floorplan notch complexity.](Figure/notch_distribution_piechart.pdf)
+
 
 ## License
 
