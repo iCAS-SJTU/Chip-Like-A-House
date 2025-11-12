@@ -186,13 +186,13 @@ Tip: Pre-generated datasets are already included under `dataset/sample_*/def_fil
 ## Validation
 We validate all generated DEF files by conducting three different experiments:
 1. Geometric Legality and DEF Verification: All generated DEF files are checked for geometric legality, ensuring that the DIEAREA definitions are valid and conform to DEF specifications.
-![LLM-Assisted Layout Legality Verification](/Users/tttiko/Desktop/Chip-Like-A-House/Figure/Fig4_LLM_verification.pdf)
+![LLM-Assisted Layout Legality Verification](Figure/LLM_verification.png)
 
 2. Consistency Between Image and Layout: We compare the CV generated layout against the input def file to ensure that the layout is consistent with the visual representation.
-![Layout Consistency Metrics (IoU and SSIM per Design)](/Users/tttiko/Desktop/Chip-Like-A-House/Figure/Fig5_Consistency_verification.pdf)
+![Layout Consistency Metrics (IoU and SSIM per Design)](Figure/ConsistencyBar.png)
 
 3. Data Coverage and Diversity Analysis: We analyze the generated layouts to ensure a diverse set of designs is produced, covering various architectural styles and design constraints.
-![Distribution of rectilinear floorplan notch complexity.](Figure/notch_distribution_piechart.pdf)
+![Distribution of rectilinear floorplan notch complexity.](Figure/distribution_piechart.png)
 
 
 ## License
