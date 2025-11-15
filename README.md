@@ -188,10 +188,10 @@ We validate all generated DEF files by conducting three different experiments:
 1. Geometric Legality and DEF Verification: All generated DEF files are checked for geometric legality, ensuring that the DIEAREA definitions are valid and conform to DEF specifications.
 <img src="Figure/LLM_verification.png" alt="LLM-Assisted Layout Legality Verification" width="500">
 
-1. Consistency Between Image and Layout: We compare the CV generated layout against the input def file to ensure that the layout is consistent with the visual representation.
+2. Consistency Between Image and Layout: We compare the CV generated layout against the input def file to ensure that the layout is consistent with the visual representation.
 <img src="Figure/ConsistencyBar.png" alt="Layout Consistency Metrics (IoU and SSIM per Design)" width="500">
 
-1. Data Coverage and Diversity Analysis: We analyze the generated layouts to ensure a diverse set of designs is produced, covering various architectural styles and design constraints.
+3. Data Coverage and Diversity Analysis: We analyze the generated layouts to ensure a diverse set of designs is produced, covering various architectural styles and design constraints.
 <img src="Figure/distribution_piechart.png" alt="Distribution of rectilinear floorplan notch complexity." width="400">
 
 ## Report Bug
