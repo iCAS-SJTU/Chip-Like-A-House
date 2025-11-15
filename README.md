@@ -194,6 +194,26 @@ We validate all generated DEF files by conducting three different experiments:
 1. Data Coverage and Diversity Analysis: We analyze the generated layouts to ensure a diverse set of designs is produced, covering various architectural styles and design constraints.
 <img src="Figure/distribution_piechart.png" alt="Distribution of rectilinear floorplan notch complexity." width="400">
 
+## Report Bug
+
+We welcome bug reports and greatly appreciate your help in improving the R-Zoo Rectilinear Floorplan Benchmark Dataset and its accompanying tools.
+
+Before reporting a bug, please:
+1. Check existing issues to avoid duplicates.
+2. Ensure you are using the latest version of the repository.
+3. Prepare any files needed for reproduction (DEF, LEF, config, logs, images, etc.).
+
+To report a bug:
+1. Go to the Issues tab.
+2. Click New Issue → Report Bug.
+3. Fill out the required information, including:
+    - Description of the problem
+    - Steps to reproduce
+    - Expected vs. actual behavior
+    - Environment (OS, Python version, commit hash, etc.)
+    - Attachments (log files, screenshots, input DEF/LEF, floorplan images, config JSON, etc.)
+
+Providing detailed and reproducible information will help us diagnose and resolve the issue more effectively.
 
 ## License
 
