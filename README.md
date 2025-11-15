@@ -217,7 +217,9 @@ Providing detailed and reproducible information will help us diagnose and resolv
 
 ## License
 
-This repository is released under the MIT License (see LICENSE if present).
+This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0). 
+See https://creativecommons.org/licenses/by-nc/4.0/ for more information.
+
 
 ## Acknowledgements
 
