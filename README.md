@@ -175,7 +175,15 @@ Outputs appear under the script’s configured `OUT_DIR` (e.g., `ariane133_small
 
 Tip: Pre-generated datasets are already included under `dataset/sample_*/def_files/`. You can regenerate to a new folder and compare.
 
-### 4 Troubleshooting
+### 4 LLM-Based Legality Evaluation
+
+The overall process is shown in the following figure:
+
+<img src="Figure/LLM_evaluation.png" width="500">
+
+For more implementation details, please refer to `for_evaluation/` . It provides the evaluation subset of the R-Zoo rectilinear floorplan benchmark with varying notch complexity, as well as examples exhibiting diverse legality issues, with an overall ligeality of 11/14. Users can confirm their own LLM outputs using the sample output, in order to carry out a reproducible and geometry-aware physical design research.
+
+### 5 Troubleshooting
 - OpenCV import error: Install OpenCV (see Requirements). Image mode is optional; other modes don’t require it.
 - “DIEAREA line not found”: Ensure your input DEF contains a valid `DIEAREA ... ;` line.
 - “Coordinate count must be ...”: For `-r N`, you must pass exactly `4*N` integers after `-c`.

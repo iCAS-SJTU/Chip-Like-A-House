@@ -1,34 +1,96 @@
 # R-Zoo: Evaluation Subset — Rectilinear Floorplan Benchmarks
 
-Benchmarking is fundamental to advancing physical design automation, as it enables quantitative and reproducible comparison of competing algorithms. R-Zoo provides a standardized collection of rectilinear floorplans featuring diverse notch patterns, aspect ratios, and whitespace distributions, allowing researchers to test optimization algorithms under controlled yet realistic conditions. Designs range from single-notch layouts to multi-notch floorplans, ensuring broad coverage across possible scenarios. Each layout is verified for legality and can be directly integrated into open-source flows such as DREAMPlace and OpenROAD, offering a reproducible and extensible environment for evaluating placement quality, whitespace utilization, and congestion metrics. This subset is particularly suitable for assessing rectilinear-aware placement algorithms, whitespace diagnosis frameworks, and topology-driven co-optimization methods.
+This repository provides the evaluation subset of the R-Zoo rectilinear floorplan benchmark, designed for reproducible and geometry-aware physical design research. The subset contains rectilinear DIEAREA definitions with varying notch complexity, as well as examples exhibiting diverse legality issues, with an overall ligeality of 11/14.
+
+To facilitate reproducibility and independent verification, the subset intentionally includes both legal and illegal floorplans. The illegal examples are curated to cover different categories of geometric and syntactic violations (e.g., self-intersection, repeated vertices, and invalid cutout configurations), enabling users to directly evaluate and validate legality checking tools, including LLM-based verifiers, under controlled conditions.
+
+This design allows researchers to reproduce the reported legality assessment results, inspect false positives or false negatives, and benchmark the robustness of alternative verification pipelines using the same input set.
 
 ## Subset Overview
 
-| Design | Single-notch | Multi-notch |
-|:------:|:------------:|:-----------:|
-| Ariane133 | [ariane133_single_notch.def](ariane133_single_notch.def) | [ariane133_multi_notch.def](ariane133_multi_notch.def) |
-| Ariane136 | [ariane136_single_notch.def](ariane136_single_notch.def) | [ariane136_multi_notch.def](ariane136_multi_notch.def) |
-| BlackParrot — Back End (BP BE) | [bp_be_single_notch.def](bp_be_single_notch.def) | [bp_be_multi_notch.def](bp_be_multi_notch.def) |
-| BlackParrot — Front End (BP FE) | [bp_fe_single_notch.def](bp_fe_single_notch.def) | [bp_fe_multi_notch.def](bp_fe_multi_notch.def) |
-| BlackParrot — Multi-core (BP Multi) | [bp_multi_single_notch.def](bp_multi_single_notch.def) | [bp_multi_multi_notch.def](bp_multi_multi_notch.def) |
-| SwervWrapper (SW) | [sw_single_notch.def](sw_single_notch.def) | [sw_multi_notch.def](sw_multi_notch.def) |
-| RocketTile (TR) | [tr_single_notch.def](tr_single_notch.def) | [tr_multi_notch.def](tr_multi_notch.def) |
+| Design | Single-notch | Legality | Multi-notch | Legality |
+|:------:|:------------:|:--------:|:-----------:|:--------:|
+| Ariane133 | [ariane133_single_notch.def](ariane133_single_notch.def) | Legal | [ariane133_multi_notch.def](ariane133_multi_notch.def) | Legal |
+| Ariane136 | [ariane136_single_notch.def](ariane136_single_notch.def) | Legal | [ariane136_multi_notch.def](ariane136_multi_notch.def) | Legal |
+| BlackParrot — Back End (BP BE) | [bp_be_single_notch.def](bp_be_single_notch.def) | Illegal | [bp_be_multi_notch.def](bp_be_multi_notch.def) | Legal |
+| BlackParrot — Front End (BP FE) | [bp_fe_single_notch.def](bp_fe_single_notch.def) | Legal | [bp_fe_multi_notch.def](bp_fe_multi_notch.def) | Illegal |
+| BlackParrot — Multi-core (BP Multi) | [bp_multi_single_notch.def](bp_multi_single_notch.def) | Legal | [bp_multi_multi_notch.def](bp_multi_multi_notch.def) | Illegal |
+| SwervWrapper (SW) | [sw_single_notch.def](sw_single_notch.def) | Legal | [sw_multi_notch.def](sw_multi_notch.def) | Legal |
+| RocketTile (TR) | [tr_single_notch.def](tr_single_notch.def) | Legal | [tr_multi_notch.def](tr_multi_notch.def) | Legal |
 
 > Notes: All DEFs share the same LEF/tech LEF stacks as in the main dataset for their respective designs (see `dataset/sample_*/input_sources/`). Ensure consistent DBU per micron when mixing with other sources.
 
 ## Usage
 
-These DEFs are plug-in benchmarks for physical design research:
+### Input
 
-- Placement evaluation: feed a baseline macro/standard-cell placer and compare final HPWL, overflow, density, and timing-aware proxies.
-- Whitespace analysis: quantify utilization vs. notch severity; evaluate legalization robustness.
-- Congestion studies: run global routing proxies or congestion estimation and compare hotspots across single vs. multi-notch shapes.
+A folder of .def files. (eg. a folder of four files: [ariane136_single_notch.def](ariane136_single_notch.def),  [ariane136_multi_notch.def](ariane136_multi_notch.def), [bp_be_single_notch.def](bp_be_single_notch.def), [bp_fe_multi_notch.def](bp_fe_multi_notch.def))
 
-Minimal guidance:
+### Prompt Structure (Representative Example)
 
-1) Provide the corresponding technology/lib LEFs from the main dataset (e.g., `dataset/sample_*/input_sources/`).
-2) Import the chosen DEF into your flow (OpenROAD, DREAMPlace, etc.).
-3) Run your standard placement recipe and log metrics (HPWL, density/overflow, congestion score). Fix seeds for reproducibility.
+The LLM is prompted in a deterministic legality-checking role. A representative prompt structure is shown below.
+
+#### Role Definition
+```
+You are an EDA physical design legality checker.
+Your task is to verify whether a given rectilinear .def file is geometrically and syntactically legal.
+```
+
+#### Verification Checklist
+```
+Please verify the following conditions:
+1. The contents follow DEF grammar convention.
+2. The polygon is closed but not repeated (first point ≠ last point).
+3. The polygon is a non-intersecting rectilinear polygon.
+4. Cutouts do not overlap.
+```
+
+#### Output Constraint
+```
+Please return the result in the following format:
+
+For each file:
+LEGALITY: {LEGAL | ILLEGAL}
+REASON: <brief explanation>
+
+At the end:
+Conclusively, the legality rate of the input folder is <legality rate>.
+```
+
+---
+
+### Example Verification Output
+
+#### Sample output for legal files
+```
+ariane136_single_notch.def
+
+LEGALITY: LEGAL
+REASON: DEF grammar is valid; DIEAREA polygon is rectilinear, closed without repetition, non-self-intersecting, and has no overlapping cutouts.
+
+ariane136_multi_notch.def
+
+LEGALITY: LEGAL
+REASON: DEF syntax is correct; DIEAREA polygon is a simple rectilinear polygon; all cutouts are         non-overlapping.
+```
+
+#### Sample output for illegal files
+```
+bp_be_single_notch.def
+
+LEGALITY: ILLEGAL
+REASON: DIEAREA polygon is non-simple, exhibiting a self-intersection or self-touching vertex, violating rectilinear polygon constraints.
+
+bp_fe_multi_notch.def
+
+LEGALITY: ILLEGAL
+REASON: DIEAREA polygon repeats the first vertex as the last vertex and is also non-simple, violating closure and non-intersection rules.
+```
+
+#### Sample Summary
+```
+Conclusively, the legality rate of the input folder is 50% (2/4).
+```
 
 ## Reporting
 
@@ -39,7 +101,7 @@ Minimal guidance:
 
 ## License
 
-This subset follows the repository’s MIT License (see LICENSE if present).
+This subset follows the repository’s MIT License.
 
 ## Acknowledgements
 
