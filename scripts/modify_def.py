@@ -387,6 +387,33 @@ def generate_new_diearea(original_corners, top_right_pairs, bottom_right_pairs, 
             else:
                 all_points.extend([(x2, y1), (x2, y2), (x1, y2), (x1, y1)])
 
+    # Clean up duplicate points - loop until stable
+    while True:
+        # Step 1: Remove head and tail if they are the same
+        if len(all_points) > 1 and all_points[0] == all_points[-1]:
+            all_points = all_points[1:-1]
+
+        # Step 2: Remove touching duplicates entirely (A,B,B,C -> A,C)
+        cleaned_points = []
+        has_duplicates = False
+
+        i = 0
+        n = len(all_points)
+        while i < n:
+            if i + 1 < n and all_points[i] == all_points[i + 1]:
+                dup_point = all_points[i]
+                has_duplicates = True
+                while i < n and all_points[i] == dup_point:
+                    i += 1
+                continue
+            cleaned_points.append(all_points[i])
+            i += 1
+
+        all_points = cleaned_points
+
+        if not has_duplicates:
+            break
+
     points_str = ' '.join(f'( {x} {y} )' for x, y in all_points)
     return f"DIEAREA {points_str} ;"
 
@@ -399,6 +426,27 @@ def write_def_file(output_file, lines, new_diearea, diearea_index):
     except Exception as e:
         print(f"Error: Failed to write to file {output_file}: {str(e)}")
         sys.exit(1)
+
+def sort_points_clockwise(points):
+    """Sorts a list of points in a clockwise order around their centroid."""
+    # Compute the centroid of the points
+    centroid_x = sum(x for x, y in points) / len(points)
+    centroid_y = sum(y for x, y in points) / len(points)
+    
+    # Sort points based on the angle they make with the centroid
+    points.sort(key=lambda p: np.arctan2(p[1] - centroid_y, p[0] - centroid_x))
+    
+    return points
+
+def dedup_pairs(pairs):
+    """Remove duplicate (edge_point, internal_point) pairs while preserving first occurrence order."""
+    seen = set()
+    deduped = []
+    for pair in pairs:
+        if pair not in seen:
+            deduped.append(pair)
+            seen.add(pair)
+    return deduped
 
 def process_def_file(args):
     """Main logic for processing the .def file"""
@@ -476,6 +524,21 @@ def process_def_file(args):
         except ValueError as e:
             print(f"Error: {str(e)}")
             sys.exit(1)
+
+        top_right_pairs   = dedup_pairs(top_right_pairs)
+        top_left_pairs    = dedup_pairs(top_left_pairs)
+        bottom_left_pairs = dedup_pairs(bottom_left_pairs)
+        bottom_right_pairs= dedup_pairs(bottom_right_pairs)
+
+        left_edge_pairs   = dedup_pairs(left_edge_pairs)
+        top_edge_pairs    = dedup_pairs(top_edge_pairs)
+        right_edge_pairs  = dedup_pairs(right_edge_pairs)
+        bottom_edge_pairs = dedup_pairs(bottom_edge_pairs)
+
+        top_right_pairs.sort(key=lambda p: (-p[1][1], p[1][0]))
+        top_left_pairs.sort(key=lambda p: (-p[1][1], -p[1][0]))
+        bottom_left_pairs.sort(key=lambda p: ( p[1][1], -p[1][0]))
+        bottom_right_pairs.sort(key=lambda p:( p[1][1],  p[1][0]))
 
         try:
             new_diearea = generate_new_diearea(

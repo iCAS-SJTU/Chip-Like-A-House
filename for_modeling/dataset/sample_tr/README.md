@@ -26,18 +26,18 @@ Below is a visual gallery of the generated floorplans. Click any image to open t
 				<sub>large_rects_005.def</sub>
 			</td>
 			<td align="center">
-				<a href="def_files/medium_rects_002.def"><img class="fp-img" src="floorplan_plots/medium_rects_002.png" alt="medium_rects_002" width="260"></a><br>
-				<sub>medium_rects_002.def</sub>
+				<a href="def_files/medium_rects_001.def"><img class="fp-img" src="floorplan_plots/medium_rects_001.png" alt="medium_rects_001" width="260"></a><br>
+				<sub>medium_rects_001.def</sub>
 			</td>
 		</tr>
 		<tr>
 			<td align="center">
-				<a href="def_files/medium_rects_004.def"><img class="fp-img" src="floorplan_plots/medium_rects_004.png" alt="medium_rects_004" width="260"></a><br>
-				<sub>medium_rects_004.def</sub>
+				<a href="def_files/medium_rects_002.def"><img class="fp-img" src="floorplan_plots/medium_rects_002.png" alt="medium_rects_002" width="260"></a><br>
+				<sub>medium_rects_002.def</sub>
 			</td>
 			<td align="center">
-				<a href="def_files/medium_rects_010.def"><img class="fp-img" src="floorplan_plots/medium_rects_010.png" alt="medium_rects_010" width="260"></a><br>
-				<sub>medium_rects_010.def</sub>
+				<a href="def_files/medium_rects_003.def"><img class="fp-img" src="floorplan_plots/medium_rects_003.png" alt="medium_rects_003" width="260"></a><br>
+				<sub>medium_rects_003.def</sub>
 			</td>
 			<td align="center">
 				<a href="def_files/small_rects_001.def"><img class="fp-img" src="floorplan_plots/small_rects_001.png" alt="small_rects_001" width="260"></a><br>
