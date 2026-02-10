@@ -78,7 +78,8 @@ Tip: Adjust width/height for alternative aspect ratios; confirm DBU per micron i
 
 ## License
 
-This subset follows the repository’s MIT License (see LICENSE if present).
+This subset follows the repository’s Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0). 
+See https://creativecommons.org/licenses/by-nc/4.0/ for more information.
 
 ## Acknowledgements
 

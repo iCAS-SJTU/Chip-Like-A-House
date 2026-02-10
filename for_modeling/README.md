@@ -95,7 +95,8 @@ All distributed DEFs have validated DIEAREA polygons and non-overlapping macro p
 
 ## License
 
-Distributed under MIT License; see root LICENSE file if present.
+This subset follows the repository’s Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0). 
+See https://creativecommons.org/licenses/by-nc/4.0/ for more information.
 
 ## Acknowledgements
 

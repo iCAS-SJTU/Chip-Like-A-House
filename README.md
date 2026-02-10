@@ -181,7 +181,7 @@ The overall process is shown in the following figure:
 
 <img src="Figure/LLM_evaluation.png" width="500">
 
-For more implementation details, please refer to `for_evaluation/` . It provides the evaluation subset of the R-Zoo rectilinear floorplan benchmark with varying notch complexity, as well as examples exhibiting diverse legality issues, with an overall ligeality of 11/14. Users can confirm their own LLM outputs using the sample output, in order to carry out a reproducible and geometry-aware physical design research.
+For more implementation details, please refer to [`for_evaluation/README.md`](for_evaluation/README.md). It provides the legality table of the evaluation subset with varying notch complexity, as well as examples exhibiting diverse legality issues, with an overall ligeality of 11/14. Users can confirm their own LLM outputs using the sample output, in order to carry out a reproducible and geometry-aware physical design research.
 
 ### 5 Troubleshooting
 - OpenCV import error: Install OpenCV (see Requirements). Image mode is optional; other modes don’t require it.

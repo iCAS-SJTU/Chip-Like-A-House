@@ -101,7 +101,8 @@ Conclusively, the legality rate of the input folder is 50% (2/4).
 
 ## License
 
-This subset follows the repository’s MIT License.
+This subset follows the repository’s Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0). 
+See https://creativecommons.org/licenses/by-nc/4.0/ for more information.
 
 ## Acknowledgements
 
